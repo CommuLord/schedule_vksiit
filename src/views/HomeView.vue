@@ -42,6 +42,14 @@
         </div>
 
       </div>
+
+      <div class="day-change-div">
+          <div class="day-change">
+            <p class="h0">Понедельник - 12.48.2069</p>
+            <img src="/src/assets/chedowntitle.svg" alt="chedown">
+          </div>
+        </div>
+
       <div class="main-main">
 
         <ScheduleCard />
@@ -191,6 +199,21 @@ main {
   justify-content: center;
   width: 100%;
   margin-top: 24px;
+}
+
+.day-change-div {
+  display: flex;
+}
+
+.day-change {
+  display: flex;
+}
+
+.h0 {
+  font-size: 40px;
+  margin: 2px 0 2px 0;
+  margin-right: 8px;
+  font-weight: bold;
 }
 
 </style>

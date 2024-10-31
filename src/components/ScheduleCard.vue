@@ -26,18 +26,18 @@
           <div class="card-main">
         <div class="table-container">
             <div class="table-row">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
+                    <p class="h2 title-cell">Начало</p>
+                    <p class="h2 title-cell">Конец</p>
+                    <p class="h2 title-cell">Предмет</p>
+                    <p class="h2 title-cell">Преподаватель</p>
+                    <p class="h2 title-cell">Кабинет</p>
             </div>
-            <div class="table-row">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
+            <div class="table-row" v-for="(item, index) in schedule" :key="index">
+              <input type="text" class="table-cell" :value="item.start">
+              <input type="text" class="table-cell" :value="item.end">
+              <input type="text" class="table-cell" :value="item.subject">
+              <input type="text" class="table-cell" :value="item.teacher">
+              <input type="text" class="table-cell" :value="item.room">
             </div>
             <div class="table-row">
                 <input type="text" class="table-cell" placeholder="Value">
@@ -50,6 +50,20 @@
     </div>
         </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      schedule: [
+        { start: '08:00', end: '09:00', subject: 'Математика', teacher: 'Иванов И.И.', room: '101' },
+        { start: '09:00', end: '10:00', subject: 'Физика', teacher: 'Петров П.П.', room: '102' },
+        { start: '10:00', end: '11:00', subject: 'Химия', teacher: 'Сидоров С.С.', room: '103' }
+      ]
+    };
+  }
+};
+</script>
 
 <style scoped>
 /* Общие стили для текста */
@@ -202,7 +216,8 @@ main {
 
 .card-left-top {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 16px;
     width: 20%;
 }
 
@@ -213,17 +228,23 @@ main {
 .table-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+            justify-content: space-between;
+            width: 100%;
         }
         .table-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
         .table-cell {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 8px;
         }
+        .title-cell {
+            flex: 1;
+        }
+        
 
 </style>
