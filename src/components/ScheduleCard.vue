@@ -214,6 +214,17 @@ main {
   display: flex;
 }
 
+.white-button:hover {
+  transform: translateY(-2px);
+  background: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.white-button:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
 .card-left-top {
     display: flex;
     justify-content: flex-start;
@@ -232,16 +243,26 @@ main {
             justify-content: space-between;
             width: 100%;
         }
+
         .table-row {
             display: flex;
             gap: 8px;
         }
+
         .table-cell {
             flex: 1;
             padding: 12px;
             border: 1px solid #ccc;
             border-radius: 8px;
+            transition: all 0.1s ease-in-out;
         }
+
+        .table-cell:focus {
+          outline: none;
+          border-color: #2c2c2c;
+          box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
+        }
+
         .title-cell {
             flex: 1;
         }

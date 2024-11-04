@@ -56,7 +56,7 @@ export default {
     selectTab(index) {
       this.activeTabIndex = index;
       if (index === 0) {
-        this.$router.push('/');
+        this.$router.push('/home');
       } else if (index === 1) {
         this.$router.push('/archive');
       } else if (index === 2) {
@@ -66,7 +66,7 @@ export default {
     updateActiveTab() {
       const path = this.$route.path;
       switch (path) {
-        case '/':
+        case '/home':
           this.activeTabIndex = 0;
           break;
         case '/archive':
@@ -195,7 +195,7 @@ header {
   font-weight: bold;
   cursor: pointer;
   color: #757575;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
 .tab-button:hover {

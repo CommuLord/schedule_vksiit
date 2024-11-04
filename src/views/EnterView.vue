@@ -1,11 +1,14 @@
-<!-- src/views/RegisterView.vue -->
+<!-- src/views/EnterView.vue -->
 <template>
   <div>
     <main>
       <section id="enter">
         <div class="logo-container">
           <img src="@/assets/logo.svg" alt="Logo" class="logo-img" id="logo-img">
-          <p class="h1">Менеджер расписания</p>
+          <div class="h1">
+            <span class="span-top">Менеджер</span>
+            <span>расписания</span>
+          </div>
         </div>
         <div class="enter-inner-container">
           <div class="login-menu">
@@ -31,10 +34,10 @@
 
 <script>
 export default {
-  name: 'RegisterView',
+  name: 'EnterView',
   methods: {
     redirectMain() {
-      this.$router.push('/');
+      this.$router.push('/home');
     }
   }
 };
@@ -58,6 +61,7 @@ main {
   align-items: center;
   flex-direction: column;
   min-height: 80vh;
+  color: #1E1E1E;
 }
 
 input {
@@ -74,12 +78,13 @@ input {
 .logo-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
   font-weight: 500;
 }
 
 .logo-img {
-  width: 50px;
+  width: 65px;
   height: auto;
   margin-right: 5px;
   cursor: pointer;
@@ -102,7 +107,7 @@ input {
   padding: 15px;
   border-radius: 8px;
   border: 1px solid #d9d9d9;
-  min-width: 14%;
+  min-width: 320px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,7 +135,7 @@ input {
 
 .login-input, .pass-input {
   font-size: 16px;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
 .login-input:focus, .pass-input:focus {
@@ -177,4 +182,10 @@ input {
 .p1 { line-height: 1.5; margin-bottom: 18px; }
 .p2 { line-height: 1.3; margin-bottom: 12px; }
 .p3 { line-height: 1.2; margin-bottom: 10px; }
+
+
+.span-top {
+  display: block;
+  margin-bottom: -10px;
+}
 </style>

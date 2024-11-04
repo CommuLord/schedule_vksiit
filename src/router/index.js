@@ -1,20 +1,20 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import RegisterView from '../views/RegisterView.vue';
+import EnterView from '../views/EnterView.vue';
 import ArchiveView from '../views/ArchiveView.vue';
 import SourceDataView from '../views/SourceDataView.vue';
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: HomeView
   },
   {
-    path: '/register',
+    path: '/',
     name: 'register',
-    component: RegisterView
+    component: EnterView
   },
   {
     path: '/archive',
