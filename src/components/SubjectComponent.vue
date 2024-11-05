@@ -4,6 +4,63 @@
     <main>
       <div class="source-container">
         <input type="text" placeholder="Добавить предмет" class="source-add">
+        <div class="table-cells">
+          <div class="cell">
+            <div class="cell-text">
+              <p class="h4">Англечанин</p>
+            </div>
+            <div class="buttons">
+              <div class="buttons-wrapper">
+                <img src="/src/assets/Edit.svg" alt="edit" class="button">
+                <img src="/src/assets/Trash.svg" alt="delete" class="button">
+              </div>
+            </div>
+          </div>
+          <div class="cell">
+            <div class="cell-text">
+              <p class="h4">Англечанин</p>
+            </div>
+            <div class="buttons">
+              <div class="buttons-wrapper">
+                <img src="/src/assets/Edit.svg" alt="edit" class="button">
+                <img src="/src/assets/Trash.svg" alt="delete" class="button">
+              </div>
+            </div>
+          </div>
+          <div class="cell">
+            <div class="cell-text">
+              <p class="h4">Англечанин</p>
+            </div>
+            <div class="buttons">
+              <div class="buttons-wrapper">
+                <img src="/src/assets/Edit.svg" alt="edit" class="button">
+                <img src="/src/assets/Trash.svg" alt="delete" class="button">
+              </div>
+            </div>
+          </div>
+          <div class="cell">
+            <div class="cell-text">
+              <p class="h4">Англечанин</p>
+            </div>
+            <div class="buttons">
+              <div class="buttons-wrapper">
+                <img src="/src/assets/Edit.svg" alt="edit" class="button">
+                <img src="/src/assets/Trash.svg" alt="delete" class="button">
+              </div>
+            </div>
+          </div>
+          <div class="cell">
+            <div class="cell-text">
+              <p class="h4">Англечанин</p>
+            </div>
+            <div class="buttons">
+              <div class="buttons-wrapper">
+                <img src="/src/assets/Edit.svg" alt="edit" class="button">
+                <img src="/src/assets/Trash.svg" alt="delete" class="button">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -49,7 +106,6 @@ p,
 .source-add {
   font-size: 16px;
   transition: all 0.1s ease-in-out;
-  width: 100%;
 }
 
 input {
@@ -65,6 +121,51 @@ input {
 }
 
 .source-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.table-cells {
+  margin-top: 16px;
+  border: 2px solid #D9D9D9;
+  border-radius: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 8px;
+}
+
+.cell {
+  border-bottom: #D9D9D9 1px dotted;
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cell p {
+  font-weight: 500;
+}
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  margin-left: 8px;
+  transition: all 0.1s ease-in-out;
+  margin-top: 5px;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.button:active {
+  transform: translateY(2px);
+  box-shadow: none;
 }
   </style>
   

@@ -111,7 +111,7 @@ p,
 
 main {
   padding: 20px;
-  width: 55%;
+  width: 39%;
 }
 
 .buttons-source {
@@ -162,6 +162,6 @@ main {
 
 .margin-component {
   margin-top: 16px;
-  width: 66%;
+  width: 97%;
 }
 </style>
