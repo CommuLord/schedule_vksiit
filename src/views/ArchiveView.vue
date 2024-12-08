@@ -21,13 +21,30 @@
   </script>
   
   <style scoped>
-body,
-p,
-.h1,
-.h2,
-.h3,
-.h4 {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Regular.woff2') format('woff2'),
+       url('/fonts/Inter-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Bold.woff2') format('woff2'),
+       url('/fonts/Inter-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+body, p, .h1, .h2, .h3, .h4 {
+  font-family: 'Inter', sans-serif;
 }
 
 /* Стили для заголовков */

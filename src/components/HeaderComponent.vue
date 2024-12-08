@@ -3,7 +3,7 @@
     <div class="top-header">
       <div class="header-logo-container">
         <img src="@/assets/logo.svg" alt="Logo" class="logo-img-header">
-        <p class="header-logo-text h3">Менеджер расписания</p>
+        <p class="header-logo-text h2">Менеджер<br>расписания</p>
       </div>
       <div class="header-icons">
         <img src="@/assets/User.svg" alt="User" class="header-icon" @click="toggleUser">
@@ -105,9 +105,30 @@ toggleUser() {
 </script>
 
 <style scoped>
-/* Общие стили для текста */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Regular.woff2') format('woff2'),
+       url('/fonts/Inter-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Bold.woff2') format('woff2'),
+       url('/fonts/Inter-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
 body, p, .h1, .h2, .h3, .h4 {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Стили для заголовков */
@@ -128,7 +149,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 5px 20px;
 }
 
 .header-logo-container {
@@ -137,7 +158,7 @@ header {
 }
 
 .logo-img-header {
-  width: 28px;
+  width: 52px;
   height: auto;
   transition: all 0.3s ease-in-out;
 }

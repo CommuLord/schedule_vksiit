@@ -14,15 +14,15 @@
           <div class="login-menu">
             <div class="login-container">
               <p class="h4 login-text">Логин</p>
-              <input type="text" placeholder="Введите логин" class="login-input">
+              <input type="text" v-model="login" placeholder="Введите логин" class="login-input">
             </div>
             <div class="pass-container">
               <p class="h4 pass-text">Пароль</p>
-              <input type="password" placeholder="Введите пароль" class="pass-input">
+              <input type="password" v-model="password" placeholder="Введите пароль" class="pass-input">
             </div>
             <div class="button-container">
               <button class="accept-button" @click="redirectMain">
-                <p class="h4 button-text">Войти</p>
+                <p class="h4 button-text">Вход</p>
               </button>
             </div>
           </div>
@@ -44,15 +44,31 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Regular.woff2') format('woff2'),
+       url('/fonts/Inter-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Bold.woff2') format('woff2'),
+       url('/fonts/Inter-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', sans-serif;
   margin: 0;
 }
 
 body, p, .h1, .h2, .h3, .h4 {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
-
 
 main {
   flex: 1;
