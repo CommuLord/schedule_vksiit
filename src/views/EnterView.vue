@@ -21,10 +21,11 @@
               <input type="password" v-model="password" placeholder="Введите пароль" class="pass-input">
             </div>
             <div class="button-container">
-              <button class="accept-button" @click="redirectMain">
+              <button class="accept-button" @click="signIn">
                 <p class="h4 button-text">Вход</p>
               </button>
             </div>
+            <div v-if="error" class="error-message">{{ error }}</div>
           </div>
         </div>
       </section>
@@ -33,11 +34,39 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
+
 export default {
   name: 'EnterView',
+  data() {
+    return {
+      login: '',
+      password: '',
+      error: ''
+    };
+  },
   methods: {
-    redirectMain() {
-      this.$router.push('/home');
+    async signIn() {
+      try {
+        console.log('Sending login request with:', { login: this.login, password: this.password });
+        const response = await axios.post('/api/auth/login', {
+          login: this.login,
+          password: this.password
+        });
+        console.log('Server response:', response.data);
+        // Если сервер вернул токен, сохраняем его и перенаправляем на главную страницу
+        if (response.data.access_token) {
+          const authStore = useAuthStore();
+          authStore.setToken(response.data.access_token);
+          this.$router.push('/home');
+        } else {
+          this.error = 'Ошибка авторизации';
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        this.error = 'Неверный логин или пароль';
+      }
     }
   }
 };
@@ -203,5 +232,10 @@ input {
 .span-top {
   display: block;
   margin-bottom: -10px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
 </style>

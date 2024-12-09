@@ -1,66 +1,76 @@
 <template>
-    <div class="card-container">
-          <div class="card-top">
-            <div class="card-left-top">
-
-                <button class="white-button">
-                    <div class="button-content">
-                    <img src="/src/assets/blackcal.svg" alt="blckcl">
-                    <p class="h4">12.48.2069</p>
-                    </div>
-                </button>
-
-                <button class="white-button">
-                    <div class="button-content">
-                        <p class="h4 class-pad">Класс/Группа</p>
-                        <img src="/src/assets/chedown.svg" alt="ched">
-                    </div>
-                </button>
-            </div>
-            <div class="card-delete">
-                <button class="img-button">
-                    <img class="img-delete" src="/src/assets/delete.svg" alt="delete">
-                </button>
-            </div>
+  <div class="card-container">
+    <div class="card-top">
+      <div class="card-left-top">
+        <button class="white-button">
+          <div class="button-content">
+            <img src="/src/assets/blackcal.svg" alt="blckcl">
+            <p class="h4">12.48.2069</p>
           </div>
-          <div class="card-main">
-        <div class="table-container">
-            <div class="table-row">
-                    <p class="h2 title-cell">Начало</p>
-                    <p class="h2 title-cell">Конец</p>
-                    <p class="h2 title-cell">Предмет</p>
-                    <p class="h2 title-cell">Преподаватель</p>
-                    <p class="h2 title-cell">Кабинет</p>
-            </div>
-            <div class="table-row" v-for="(item, index) in schedule" :key="index">
-              <input type="text" class="table-cell" :value="item.start">
-              <input type="text" class="table-cell" :value="item.end">
-              <input type="text" class="table-cell" :value="item.subject">
-              <input type="text" class="table-cell" :value="item.teacher">
-              <input type="text" class="table-cell" :value="item.room">
-            </div>
-            <div class="table-row">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-                <input type="text" class="table-cell" placeholder="Value">
-            </div>
-        </div>
+        </button>
+        <button class="white-button">
+          <div class="button-content">
+            <p class="h4 class-pad">Класс/Группа</p>
+            <img src="/src/assets/chedown.svg" alt="ched">
+          </div>
+        </button>
+      </div>
+      <div class="card-delete">
+        <button class="img-button" @click="deleteCard">
+          <img class="img-delete" src="/src/assets/delete.svg" alt="delete">
+        </button>
+      </div>
     </div>
+    <div class="card-main">
+      <div class="table-container">
+        <div class="table-row">
+          <p class="h2 title-cell">Начало</p>
+          <p class="h2 title-cell">Конец</p>
+          <p class="h2 title-cell">Предмет</p>
+          <p class="h2 title-cell">Преподаватель</p>
+          <p class="h2 title-cell">Кабинет</p>
         </div>
+        <div class="table-row" v-for="(item, index) in schedule" :key="index">
+          <input type="text" class="table-cell" v-model="item.start" @input="checkInput(index)">
+          <input type="text" class="table-cell" v-model="item.end" @input="checkInput(index)">
+          <input type="text" class="table-cell" v-model="item.subject" @input="checkInput(index)">
+          <input type="text" class="table-cell" v-model="item.teacher" @input="checkInput(index)">
+          <input type="text" class="table-cell" v-model="item.room" @input="checkInput(index)">
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
+  props: {
+    id: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
       schedule: [
-        { start: '08:00', end: '09:00', subject: 'Математика', teacher: 'Иванов И.И.', room: '101' },
-        { start: '09:00', end: '10:00', subject: 'Физика', teacher: 'Петров П.П.', room: '102' },
-        { start: '10:00', end: '11:00', subject: 'Химия', teacher: 'Сидоров С.С.', room: '103' }
+        { start: '', end: '', subject: '', teacher: '', room: '' }
       ]
     };
+  },
+  methods: {
+    checkInput(index) {
+      const currentRow = this.schedule[index];
+      const isFilled = Object.values(currentRow).some(value => value.trim() !== '');
+
+      if (isFilled && index === this.schedule.length - 1) {
+        this.schedule.push({ start: '', end: '', subject: '', teacher: '', room: '' });
+      } else if (!isFilled && index === this.schedule.length - 1 && this.schedule.length > 1) {
+        this.schedule.pop();
+      }
+    },
+    deleteCard() {
+      this.$emit('delete', this.id);
+    }
   }
 };
 </script>
@@ -82,7 +92,6 @@ export default {
   font-weight: 700;
   font-style: normal;
 }
-
 
 body {
   font-family: 'Inter', sans-serif;
@@ -182,7 +191,7 @@ main {
   border: 2px solid #d9d9d9;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 16px;
   border-radius: 16px;
 }
 
@@ -204,9 +213,9 @@ main {
 }
 
 .img-button {
-    background: none;
-    border: none;
-    transition: all 0.1s ease-in-out;
+  background: none;
+  border: none;
+  transition: all 0.1s ease-in-out;
 }
 
 .img-button:hover {
@@ -218,8 +227,8 @@ main {
 }
 
 .card-top {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .white-button {
@@ -243,46 +252,45 @@ main {
 }
 
 .card-left-top {
-    display: flex;
-    justify-content: flex-start;
-    gap: 16px;
-    width: 20%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 16px;
+  width: 20%;
 }
 
 .class-pad {
-    padding-right: 50px;
+  padding-right: 50px;
 }
 
 .table-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            justify-content: space-between;
-            width: 100%;
-        }
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
 
-        .table-row {
-            display: flex;
-            gap: 8px;
-        }
+.table-row {
+  display: flex;
+  gap: 36px; /* Устанавливаем фиксированное расстояние между ячейками */
+}
 
-        .table-cell {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            transition: all 0.1s ease-in-out;
-        }
+.table-cell {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: all 0.1s ease-in-out;
+  width: calc(100% / 5 - 36px * 4 / 5); /* Устанавливаем ширину ячеек с учетом отступов */
+}
 
-        .table-cell:focus {
-          outline: none;
-          border-color: #2c2c2c;
-          box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
-        }
+.table-cell:focus {
+  outline: none;
+  border-color: #2c2c2c;
+  box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
+}
 
-        .title-cell {
-            flex: 1;
-        }
-        
-
+.title-cell {
+  flex: 1;
+}
 </style>

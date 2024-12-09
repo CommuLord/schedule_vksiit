@@ -4,59 +4,46 @@
     <HeaderComponent />
     <main>
       <div class="main-top">
-
         <div class="button-container">
-          
           <button class="main-button margin-button">
             <div class="button-content">
               <p class="h4 button-text">Неделя</p>
               <img src="/src/assets/arrowd.svg" alt="save" class="save-icon">
             </div>
           </button>
-
           <button class="main-button">
             <div class="button-content">
               <img src="@/assets/Calendar.svg" alt="calendar" class="calendar-icon">
               <p class="h4 button-text">Стартовая дата</p>
             </div>
           </button>
-
         </div>
-
         <div class="button-container-end">
-
           <button class="main-button margin-button">
             <div class="button-content">
               <img src="/src/assets/Save.svg" alt="download" class="download-icon">
               <p class="h4 button-text">Сохранить</p>
             </div>
           </button>
-
           <button class="main-button">
             <div class="button-content">
-              <img src="@/assets/Download.svg" alt="download" class="download-icon">
+              <img src="/src/assets/Download.svg" alt="download" class="download-icon">
               <p class="h4 button-text">Сохранить и Экспортировать</p>
             </div>
           </button>
-
         </div>
-
       </div>
-
       <div class="day-change-div">
-          <div class="day-change">
-            <p class="h0">Понедельник - 12.48.2069</p>
-            <img src="/src/assets/chedowntitle.svg" alt="chedown">
-          </div>
+        <div class="day-change">
+          <p class="h0">Понедельник - 12.48.2069</p>
+          <img src="/src/assets/chedowntitle.svg" alt="chedown">
         </div>
-
+      </div>
       <div class="main-main">
-
-        <ScheduleCard />
-
+        <ScheduleCard v-for="card in cards" :key="card.id" @delete="removeCard(card.id)" />
       </div>
       <div class="new-day-container">
-        <button class="main-button">
+        <button class="main-button" @click="addCard">
           <div class="button-content">
             <img src="/src/assets/new.svg" alt="new" class="new-icon">
             <p class="h4 button-text">Добавить день</p>
@@ -76,6 +63,19 @@ export default {
   components: {
     HeaderComponent,
     ScheduleCard
+  },
+  data() {
+    return {
+      cards: []
+    };
+  },
+  methods: {
+    addCard() {
+      this.cards.push({ id: Date.now() }); // Используем текущее время как уникальный идентификатор
+    },
+    removeCard(id) {
+      this.cards = this.cards.filter(card => card.id !== id);
+    }
   }
 };
 </script>
@@ -190,6 +190,9 @@ main {
 
 .main-main {
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .card-container {

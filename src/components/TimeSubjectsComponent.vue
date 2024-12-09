@@ -1,10 +1,17 @@
-<!-- src/components/TimeSubjectsComponent.vue-->
+<!-- src/components/TimeSubjectsComponent.vue -->
 <template>
   <div>
     <main>
       <div class="source-container">
-        <input type="text" placeholder="Предмет" class="source-add">
-        <input type="text" placeholder="Время на предмет" class="source-add">
+        <div class="input-an-wrapper">
+          <div class="input-wrapper first-input">
+            <input type="text" placeholder="Предмет" class="source-add">
+            <img src="/src/assets/Arrow-black-down.svg" alt="arrow" class="arrow-icon">
+          </div>
+          <div class="input-wrapper second-input">
+            <input type="text" placeholder="Время на предмет" class="source-add">
+          </div>
+        </div>
         <div class="table-cells">
           <div class="cell">
             <div class="cell-text">
@@ -72,8 +79,8 @@ export default {
   name: 'TimeSubjectsComponent'
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter-Regular.woff2') format('woff2'),
@@ -89,7 +96,6 @@ export default {
   font-weight: 700;
   font-style: normal;
 }
-
 
 body {
   font-family: 'Inter', sans-serif;
@@ -124,12 +130,40 @@ body, p, .h1, .h2, .h3, .h4 {
 .source-add {
   font-size: 16px;
   transition: all 0.1s ease-in-out;
-}
-
-input {
-  padding: 10px;
+  padding: 10px 40px 10px 10px;
   border: 2px solid #303030;
   border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-an-wrapper {
+  display: flex;
+  width: 100%;
+  gap: 6px;
+}
+
+.input-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.first-input {
+  flex: 3;
+}
+
+.second-input {
+  flex: 1;
+}
+
+.arrow-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  width: 20px;
+  height: auto;
 }
 
 .source-add:focus {
@@ -185,5 +219,4 @@ input {
   transform: translateY(2px);
   box-shadow: none;
 }
-  </style>
-  
+</style>
