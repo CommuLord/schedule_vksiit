@@ -1,62 +1,34 @@
-<!-- src/components/TeachersComponent.vue-->
+<!-- src/components/TeachersComponent.vue -->
 <template>
   <div>
     <main>
       <div class="source-container">
-        <input type="text" placeholder="Добавить учителя" class="source-add">
+        <input
+          type="text"
+          v-model="newTeacherName"
+          placeholder="Добавить учителя"
+          class="source-add"
+          @keyup.enter="addTeacher"
+        />
         <div class="table-cells">
-          <div class="cell">
+          <div class="cell" v-for="teacher in teachers" :key="teacher.id">
             <div class="cell-text">
-              <p class="h4">Англечанин</p>
+              <p class="h4">{{ teacher.firstName }} {{ teacher.lastName }} {{ teacher.middleName }}</p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Англечанин</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Англечанин</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Англечанин</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Англечанин</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
+                <img
+                  src="/src/assets/Edit.svg"
+                  alt="edit"
+                  class="button"
+                  @click="startEdit(teacher)"
+                />
+                <img
+                  src="/src/assets/Trash.svg"
+                  alt="delete"
+                  class="button"
+                  @click="deleteTeacher(teacher.id)"
+                />
               </div>
             </div>
           </div>
@@ -67,8 +39,62 @@
 </template>
 
 <script>
+import { useTeachersStore } from '@/stores/teachers';
+
 export default {
-  name: 'TeachersComponent'
+  name: 'TeachersComponent',
+  data() {
+    return {
+      newTeacherName: '',
+      editingTeacher: null,
+    };
+  },
+  computed: {
+    teachers() {
+      return useTeachersStore().teachers;
+    },
+  },
+  methods: {
+    addTeacher() {
+      if (this.newTeacherName.trim()) {
+        const parts = this.newTeacherName.trim().split(' ');
+        if (parts.length < 2) {
+          alert('Введите имя и фамилию учителя.');
+          return;
+        }
+        const firstName = parts[0];
+        const lastName = parts[1];
+        const middleName = parts[2] || null;
+        useTeachersStore().addTeacher(firstName, lastName, middleName);
+        this.newTeacherName = '';
+      }
+    },
+    startEdit(teacher) {
+      this.editingTeacher = teacher;
+      this.newTeacherName = `${teacher.firstName} ${teacher.lastName} ${teacher.middleName || ''}`;
+    },
+    updateTeacher() {
+      if (this.editingTeacher && this.newTeacherName.trim()) {
+        const parts = this.newTeacherName.trim().split(' ');
+        if (parts.length < 2) {
+          alert('Введите имя и фамилию учителя.');
+          return;
+        }
+        const firstName = parts[0];
+        const lastName = parts[1];
+        const middleName = parts[2] || null;
+        useTeachersStore().updateTeacher(this.editingTeacher.id, firstName, lastName, middleName);
+        this.editingTeacher = null;
+        this.newTeacherName = '';
+      }
+    },
+    deleteTeacher(id) {
+      useTeachersStore().deleteTeacher(id);
+    },
+  },
+  mounted() {
+    useTeachersStore().fetchTeachers();
+  },
 };
 </script>
   

@@ -19,6 +19,9 @@
         <button @click="selectButton(4)" :class="{ 'class-but': true, 'active': activeButtonIndex === 4 }">
           <p class="h4">Классы/Группы</p>
         </button>
+        <button @click="selectButton(5)" :class="{ 'cabinet-but': true, 'active': activeButtonIndex === 5 }">
+          <p class="h4">Кабинеты</p>
+        </button>
       </div>
       <div class="margin-component">
         <component :is="currentComponent"></component>
@@ -34,6 +37,7 @@ import TeachersComponent from '@/components/TeachersComponent.vue';
 import TeacherSubjectsComponent from '@/components/TeacherSubjectsComponent.vue';
 import TimeSubjectsComponent from '@/components/TimeSubjectsComponent.vue';
 import ClassesComponent from '@/components/ClassesComponent.vue';
+import CabinetsComponent from '@/components/CabinetsComponent.vue'; // Импортируем новый компонент
 
 export default {
   name: 'SourceDataView',
@@ -43,7 +47,8 @@ export default {
     TeachersComponent,
     TeacherSubjectsComponent,
     TimeSubjectsComponent,
-    ClassesComponent
+    ClassesComponent,
+    CabinetsComponent // Добавляем новый компонент
   },
   data() {
     return {
@@ -70,6 +75,9 @@ export default {
         case 4:
           this.currentComponent = 'ClassesComponent';
           break;
+        case 5:
+          this.currentComponent = 'CabinetsComponent'; // Обрабатываем новую кнопку
+          break;
         default:
           this.currentComponent = 'SubjectComponent';
       }
@@ -94,7 +102,6 @@ export default {
   font-weight: 700;
   font-style: normal;
 }
-
 
 body {
   font-family: 'Inter', sans-serif;
@@ -123,12 +130,12 @@ body, p, .h1, .h2, .h3, .h4 {
 
 .h4 {
   font-size: 16px;
-  margin: 10px 0 10px 0;
+  margin: 8px 0 8px 0; /* Изменено с 10px на 8px */
 }
 
 main {
-  padding: 20px;
-  width: 790px;
+  padding: 16px; /* Изменено с 20px на 16px */
+  width: 900px;
 }
 
 .buttons-source {
@@ -150,7 +157,7 @@ main {
   align-items: center;
   text-align: center;
   transition: all 0.1s ease-in-out;
-  color: #757575;
+  color: #757575; /* Минорный цвет */
 }
 
 .buttons-source button:hover {
@@ -174,7 +181,7 @@ main {
 
 /* Стили для активной кнопки */
 .buttons-source button.active {
-  color: #303030;
+  color: #2C2C2C; /* Заголовочный цвет */
 }
 
 .margin-component {

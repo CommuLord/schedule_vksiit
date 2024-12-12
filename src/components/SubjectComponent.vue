@@ -1,62 +1,34 @@
-<!-- src/components/SubjectComponent.vue-->
+<!-- src/components/SubjectComponent.vue -->
 <template>
   <div>
     <main>
       <div class="source-container">
-        <input type="text" placeholder="Добавить предмет" class="source-add">
+        <input
+          type="text"
+          v-model="newSubjectName"
+          placeholder="Добавить предмет"
+          class="source-add"
+          @keyup.enter="addSubject"
+        />
         <div class="table-cells">
-          <div class="cell">
+          <div class="cell" v-for="subject in subjects" :key="subject.id">
             <div class="cell-text">
-              <p class="h4">Англечанин</p>
+              <p class="h4">{{ subject.name }}</p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Англечанин</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Англечанин</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Англечанин</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Англечанин</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
+                <img
+                  src="/src/assets/Edit.svg"
+                  alt="edit"
+                  class="button"
+                  @click="startEdit(subject)"
+                />
+                <img
+                  src="/src/assets/Trash.svg"
+                  alt="delete"
+                  class="button"
+                  @click="deleteSubject(subject.id)"
+                />
               </div>
             </div>
           </div>
@@ -67,12 +39,50 @@
 </template>
 
 <script>
+import { useSubjectsStore } from '@/stores/subjects';
+
 export default {
-  name: 'SubjectComponent'
+  name: 'SubjectComponent',
+  data() {
+    return {
+      newSubjectName: '',
+      editingSubject: null,
+    };
+  },
+  computed: {
+    subjects() {
+      return useSubjectsStore().subjects;
+    },
+  },
+  methods: {
+    addSubject() {
+      if (this.newSubjectName.trim()) {
+        useSubjectsStore().addSubject(this.newSubjectName, 0);
+        this.newSubjectName = '';
+      }
+    },
+    startEdit(subject) {
+      this.editingSubject = subject;
+      this.newSubjectName = subject.name;
+    },
+    updateSubject() {
+      if (this.editingSubject && this.newSubjectName.trim()) {
+        useSubjectsStore().updateSubject(this.editingSubject.id, this.newSubjectName, 0);
+        this.editingSubject = null;
+        this.newSubjectName = '';
+      }
+    },
+    deleteSubject(id) {
+      useSubjectsStore().deleteSubject(id);
+    },
+  },
+  mounted() {
+    useSubjectsStore().fetchSubjects();
+  },
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter-Regular.woff2') format('woff2'),
@@ -88,7 +98,6 @@ export default {
   font-weight: 700;
   font-style: normal;
 }
-
 
 body {
   font-family: 'Inter', sans-serif;
@@ -117,7 +126,7 @@ body, p, .h1, .h2, .h3, .h4 {
 
 .h4 {
   font-size: 16px;
-  margin: 10px 0 10px 0;
+  margin: 8px 0 8px 0; /* Изменено с 10px на 8px */
 }
 
 .source-add {
@@ -126,14 +135,14 @@ body, p, .h1, .h2, .h3, .h4 {
 }
 
 input {
-  padding: 10px;
-  border: 2px solid #303030;
+  padding: 8px; /* Изменено с 10px на 8px */
+  border: 2px solid #1E1E1E; /* Обновлен цвет */
   border-radius: 8px;
 }
 
 .source-add:focus {
   outline: none;
-  border-color: #2c2c2c;
+  border-color: #2C2C2C; /* Обновлен цвет */
   box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
 }
 
@@ -154,7 +163,7 @@ input {
 
 .cell {
   border-bottom: #D9D9D9 1px dotted;
-  color: black;
+  color: #1E1E1E; /* Обновлен цвет */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -173,7 +182,7 @@ input {
 .button {
   margin-left: 8px;
   transition: all 0.1s ease-in-out;
-  margin-top: 5px;
+  margin-top: 4px; /* Изменено с 5px на 4px */
 }
 
 .button:hover {
@@ -184,5 +193,4 @@ input {
   transform: translateY(2px);
   box-shadow: none;
 }
-  </style>
-  
+</style>
