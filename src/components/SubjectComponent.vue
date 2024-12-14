@@ -126,7 +126,7 @@ body, p, .h1, .h2, .h3, .h4 {
 
 .h4 {
   font-size: 16px;
-  margin: 8px 0 8px 0; /* Изменено с 10px на 8px */
+  margin: 8px 0 8px 0;
 }
 
 .source-add {
@@ -135,14 +135,14 @@ body, p, .h1, .h2, .h3, .h4 {
 }
 
 input {
-  padding: 8px; /* Изменено с 10px на 8px */
-  border: 2px solid #1E1E1E; /* Обновлен цвет */
+  padding: 8px;
+  border: 2px solid #1E1E1E;
   border-radius: 8px;
 }
 
 .source-add:focus {
   outline: none;
-  border-color: #2C2C2C; /* Обновлен цвет */
+  border-color: #2C2C2C;
   box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
 }
 
@@ -163,7 +163,7 @@ input {
 
 .cell {
   border-bottom: #D9D9D9 1px dotted;
-  color: #1E1E1E; /* Обновлен цвет */
+  color: #1E1E1E;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -182,7 +182,7 @@ input {
 .button {
   margin-left: 8px;
   transition: all 0.1s ease-in-out;
-  margin-top: 4px; /* Изменено с 5px на 4px */
+  margin-top: 4px;
 }
 
 .button:hover {
