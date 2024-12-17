@@ -97,8 +97,8 @@ export default {
   },
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter-Regular.woff2') format('woff2'),
@@ -114,7 +114,6 @@ export default {
   font-weight: 700;
   font-style: normal;
 }
-
 
 body {
   font-family: 'Inter', sans-serif;
@@ -143,7 +142,7 @@ body, p, .h1, .h2, .h3, .h4 {
 
 .h4 {
   font-size: 16px;
-  margin: 10px 0 10px 0;
+  margin: 8px 0 8px 0;
 }
 
 .source-add {
@@ -152,14 +151,14 @@ body, p, .h1, .h2, .h3, .h4 {
 }
 
 input {
-  padding: 10px;
-  border: 2px solid #303030;
+  padding: 8px;
+  border: 2px solid #1E1E1E;
   border-radius: 8px;
 }
 
 .source-add:focus {
   outline: none;
-  border-color: #2c2c2c;
+  border-color: #2C2C2C;
   box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
 }
 
@@ -180,7 +179,7 @@ input {
 
 .cell {
   border-bottom: #D9D9D9 1px dotted;
-  color: black;
+  color: #1E1E1E;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -199,7 +198,7 @@ input {
 .button {
   margin-left: 8px;
   transition: all 0.1s ease-in-out;
-  margin-top: 5px;
+  margin-top: 4px;
 }
 
 .button:hover {
@@ -210,5 +209,4 @@ input {
   transform: translateY(2px);
   box-shadow: none;
 }
-  </style>
-  
+</style>

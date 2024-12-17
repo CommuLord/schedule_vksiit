@@ -8,16 +8,18 @@
         <p class="h4 button-text-denied">Выберите период</p>
       </div>
     </button>
-    <div class="archive-section">
-      <p class="h0 section-title">Январь 2025</p>
-      <div v-if="loading" class="loading">
-        <p class="h2">Загрузка...</p>
-      </div>
-      <div v-else class="archive-items">
-        <button v-for="(schedule, index) in schedules" :key="schedule.id" class="archive-item">
-          <p class="h2 archive-item-id">#{{ index + 1 }}</p>
-          <p class="h2 archive-item-date">{{ formatDate(schedule.creationDate) }}</p>
-        </button>
+    <div v-if="loading" class="loading">
+      <p class="h2">Загрузка...</p>
+    </div>
+    <div v-else>
+      <div v-for="(group, key) in groupedSchedules" :key="key" class="archive-section">
+        <p class="h0 section-title">{{ key }}</p>
+        <div class="archive-items">
+          <button v-for="(schedule, index) in group" :key="schedule.id" class="archive-item">
+            <p class="h2 archive-item-id">#{{ index + 1 }}</p>
+            <p class="h2 archive-item-date">{{ formatDate(schedule.creationDate) }}</p>
+          </button>
+        </div>
       </div>
     </div>
     <button class="main-button show-more-button">
@@ -47,6 +49,7 @@ export default {
 
     const schedules = computed(() => scheduleStore.schedules);
     const loading = computed(() => scheduleStore.loading);
+    const groupedSchedules = computed(() => scheduleStore.groupSchedules());
 
     const formatDate = (date) => {
       const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -56,6 +59,7 @@ export default {
     return {
       schedules,
       loading,
+      groupedSchedules,
       formatDate
     };
   }
@@ -92,6 +96,7 @@ body, p, .h1, .h2, .h3, .h4 {
 .h0 {
   font-size: 40px;
   margin: 2px 0 2px 0;
+  font-weight: 600;
 }
 
 .h1 {
@@ -131,7 +136,6 @@ main {
 }
 
 .section-title {
-  font-size: 24px;
   margin-bottom: 10px;
 }
 
@@ -154,7 +158,7 @@ main {
   box-sizing: border-box;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
-  flex: 1 1 auto; /* Изменяем ширину через медиазапросы */
+  width: calc(14.2857% - 20px); /* Фиксированная ширина для 7 элементов в строке */
 }
 
 .archive-item:hover {
@@ -182,25 +186,25 @@ main {
 /* Медиазапросы для адаптивного количества элементов в строке */
 @media (min-width: 1920px) {
   .archive-item {
-    flex: 1 1 calc(14.2857% - 20px); /* 7 элементов в строке */
+    width: calc(14.2857% - 20px); /* 7 элементов в строке */
   }
 }
 
 @media (min-width: 1200px) and (max-width: 1919px) {
   .archive-item {
-    flex: 1 1 calc(25% - 20px); /* 4 элемента в строке */
+    width: calc(25% - 20px); /* 4 элемента в строке */
   }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
   .archive-item {
-    flex: 1 1 calc(33.333% - 20px); /* 3 элемента в строке */
+    width: calc(33.333% - 20px); /* 3 элемента в строке */
   }
 }
 
 @media (max-width: 991px) {
   .archive-item {
-    flex: 1 1 calc(50% - 20px); /* 2 элемента в строке */
+    width: calc(50% - 20px); /* 2 элемента в строке */
   }
 }
 

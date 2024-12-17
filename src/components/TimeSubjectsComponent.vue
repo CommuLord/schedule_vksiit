@@ -15,7 +15,7 @@
         <div class="table-cells">
           <div class="cell">
             <div class="cell-text">
-              <p class="h4">Англечанин</p>
+              <p class="h4">Английский</p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
@@ -26,7 +26,7 @@
           </div>
           <div class="cell">
             <div class="cell-text">
-              <p class="h4">Англечанин</p>
+              <p class="h4">Английский</p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
@@ -37,7 +37,7 @@
           </div>
           <div class="cell">
             <div class="cell-text">
-              <p class="h4">Англечанин</p>
+              <p class="h4">Английский</p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
@@ -48,7 +48,7 @@
           </div>
           <div class="cell">
             <div class="cell-text">
-              <p class="h4">Англечанин</p>
+              <p class="h4">Английский</p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
@@ -59,7 +59,7 @@
           </div>
           <div class="cell">
             <div class="cell-text">
-              <p class="h4">Англечанин</p>
+              <p class="h4">Английский</p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
@@ -124,14 +124,14 @@ body, p, .h1, .h2, .h3, .h4 {
 
 .h4 {
   font-size: 16px;
-  margin: 10px 0 10px 0;
+  margin: 8px 0 8px 0;
 }
 
 .source-add {
   font-size: 16px;
   transition: all 0.1s ease-in-out;
-  padding: 10px 40px 10px 10px;
-  border: 2px solid #303030;
+  padding: 8px;
+  border: 2px solid #1E1E1E;
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
@@ -140,7 +140,7 @@ body, p, .h1, .h2, .h3, .h4 {
 .input-an-wrapper {
   display: flex;
   width: 100%;
-  gap: 6px;
+  gap: 10px;
 }
 
 .input-wrapper {
@@ -168,7 +168,7 @@ body, p, .h1, .h2, .h3, .h4 {
 
 .source-add:focus {
   outline: none;
-  border-color: #2c2c2c;
+  border-color: #2C2C2C;
   box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
 }
 
@@ -189,7 +189,7 @@ body, p, .h1, .h2, .h3, .h4 {
 
 .cell {
   border-bottom: #D9D9D9 1px dotted;
-  color: black;
+  color: #1E1E1E;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -208,7 +208,7 @@ body, p, .h1, .h2, .h3, .h4 {
 .button {
   margin-left: 8px;
   transition: all 0.1s ease-in-out;
-  margin-top: 5px;
+  margin-top: 4px;
 }
 
 .button:hover {

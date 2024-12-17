@@ -1,4 +1,3 @@
-<!-- src/views/EnterView.vue -->
 <template>
   <div>
     <main>
@@ -55,7 +54,6 @@ export default {
           password: this.password
         });
         console.log('Server response:', response.data);
-        // Если сервер вернул токен, сохраняем его и перенаправляем на главную страницу
         if (response.data.access_token) {
           const authStore = useAuthStore();
           authStore.setToken(response.data.access_token);
@@ -88,7 +86,6 @@ export default {
   font-weight: 700;
   font-style: normal;
 }
-
 
 body {
   font-family: 'Inter', sans-serif;
@@ -227,7 +224,6 @@ input {
 .p1 { line-height: 1.5; margin-bottom: 18px; }
 .p2 { line-height: 1.3; margin-bottom: 12px; }
 .p3 { line-height: 1.2; margin-bottom: 10px; }
-
 
 .span-top {
   display: block;

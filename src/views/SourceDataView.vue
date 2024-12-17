@@ -76,7 +76,7 @@ export default {
           this.currentComponent = 'ClassesComponent';
           break;
         case 5:
-          this.currentComponent = 'CabinetsComponent'; // Обрабатываем новую кнопку
+          this.currentComponent = 'CabinetsComponent';
           break;
         default:
           this.currentComponent = 'SubjectComponent';

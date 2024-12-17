@@ -4,13 +4,7 @@
       <div class="card-left-top">
         <button class="white-button">
           <div class="button-content">
-            <img src="/src/assets/blackcal.svg" alt="blckcl">
-            <p class="h4">12.48.2069</p>
-          </div>
-        </button>
-        <button class="white-button">
-          <div class="button-content">
-            <p class="h4 class-pad">Класс/Группа</p>
+            <p class="h4">Класс/Группа</p>
             <img src="/src/assets/chedown.svg" alt="ched">
           </div>
         </button>
@@ -238,6 +232,7 @@ main {
   cursor: pointer;
   transition: all 0.1s ease-in-out;
   display: flex;
+  width: 100%;
 }
 
 .white-button:hover {
@@ -255,7 +250,8 @@ main {
   display: flex;
   justify-content: flex-start;
   gap: 16px;
-  width: 20%;
+  width: 240px;
+  margin-bottom: 16px;
 }
 
 .class-pad {
@@ -272,7 +268,7 @@ main {
 
 .table-row {
   display: flex;
-  gap: 36px; /* Устанавливаем фиксированное расстояние между ячейками */
+  gap: 36px;
 }
 
 .table-cell {
@@ -281,7 +277,7 @@ main {
   border: 1px solid #ccc;
   border-radius: 8px;
   transition: all 0.1s ease-in-out;
-  width: calc(100% / 5 - 36px * 4 / 5); /* Устанавливаем ширину ячеек с учетом отступов */
+  width: calc(100% / 5 - 36px * 4 / 5);
 }
 
 .table-cell:focus {

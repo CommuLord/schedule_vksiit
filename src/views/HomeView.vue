@@ -5,13 +5,13 @@
     <main>
       <div class="main-top">
         <div class="button-container">
-          <button class="main-button margin-button">
+          <button class="main-button margin-button" @click.stop="toggleWeekMenu">
             <div class="button-content">
               <p class="h4 button-text">Неделя</p>
-              <img src="/src/assets/arrowd.svg" alt="save" class="save-icon">
+              <img :class="['save-icon', { 'rotate': isWeekMenuOpen }]" src="/src/assets/arrowd.svg" alt="save">
             </div>
           </button>
-          <button class="main-button">
+          <button class="main-button" @click.stop="toggleCalendar">
             <div class="button-content">
               <img src="@/assets/Calendar.svg" alt="calendar" class="calendar-icon">
               <p class="h4 button-text">Стартовая дата</p>
@@ -33,49 +33,162 @@
           </button>
         </div>
       </div>
-      <div class="day-change-div">
-        <div class="day-change">
-          <p class="h0">Понедельник - 12.48.2069</p>
-          <img src="/src/assets/chedowntitle.svg" alt="chedown">
-        </div>
-      </div>
-      <div class="main-main">
-        <ScheduleCard v-for="card in cards" :key="card.id" @delete="removeCard(card.id)" />
-      </div>
-      <div class="new-day-container">
-        <button class="main-button" @click="addCard">
-          <div class="button-content">
-            <img src="/src/assets/new.svg" alt="new" class="new-icon">
-            <p class="h4 button-text">Добавить день</p>
+      <transition name="fade">
+        <div v-if="isWeekMenuOpen" class="week-menu-wrapper" @click.stop>
+          <div class="stroke-wrapper" @click="setWeekDays(5)">
+            <img class="img-menu" src="@/assets/calendar.svg" alt="5 days">
+            <p class="h4">5 дней</p>
           </div>
-        </button>
+          <div class="stroke-wrapper" @click="setWeekDays(6)">
+            <img class="img-menu" src="@/assets/calendar.svg" alt="6 days">
+            <p class="h4">6 дней</p>
+          </div>
+        </div>
+      </transition>
+      <transition name="fade">
+        <div v-if="isCalendarOpen" class="calendar-wrapper" @click.stop>
+          <v-calendar :attributes="attrs" @dayclick="onDayClick" />
+        </div>
+      </transition>
+      <div v-for="(day, index) in weekDays" :key="index" class="day-change-div">
+        <div class="day-change" @click="toggleDropdown(index)">
+          <p class="h0">{{ day.name }} - {{ day.date }}</p>
+          <img :class="['arrow-icon', { 'rotate': isDropdownOpen[index] }]" src="/src/assets/chedowntitle.svg" alt="chedown">
+        </div>
+        <transition name="dropdown">
+          <div v-show="isDropdownOpen[index]" class="dropdown-content">
+            <transition-group name="card" tag="div" class="main-main">
+              <ScheduleCard v-for="card in day.cards" :key="card.id" @delete="removeCard(index, card.id)" @click.stop />
+            </transition-group>
+            <div class="new-day-container">
+              <button class="main-button" @click.stop="addCard(index)">
+                <div class="button-content">
+                  <img src="/src/assets/new.svg" alt="new" class="new-icon">
+                  <p class="h4 button-text">Добавить группу</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </transition>
       </div>
     </main>
   </div>
 </template>
 
 <script>
+import { reactive, ref, onMounted, onBeforeUnmount } from 'vue';
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import ScheduleCard from '@/components/ScheduleCard.vue';
+import { Calendar } from 'v-calendar';
+import 'v-calendar/dist/style.css'; // Импорт стилей v-calendar
 
 export default {
   name: 'HomeView',
   components: {
     HeaderComponent,
-    ScheduleCard
+    ScheduleCard,
+    'v-calendar': Calendar
   },
-  data() {
-    return {
-      cards: []
+  setup() {
+    const weekDays = reactive([]);
+    const isDropdownOpen = reactive([]);
+    const isWeekMenuOpen = ref(false);
+    const isCalendarOpen = ref(false);
+    const selectedDate = ref(null);
+
+    const initializeWeekDays = (daysCount, startDate = new Date()) => {
+      const startOfWeek = getStartOfWeek(startDate);
+      const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+
+      weekDays.length = 0; // Clear the array
+      weekDays.push(...daysOfWeek.slice(0, daysCount).map((dayName, index) => {
+        const date = new Date(startOfWeek);
+        date.setDate(startOfWeek.getDate() + index);
+        return {
+          name: dayName,
+          date: date.toLocaleDateString(),
+          cards: []
+        };
+      }));
+
+      isDropdownOpen.length = 0; // Clear the array
+      isDropdownOpen.push(...new Array(weekDays.length).fill(false));
     };
-  },
-  methods: {
-    addCard() {
-      this.cards.push({ id: Date.now() }); // Используем текущее время как уникальный идентификатор
-    },
-    removeCard(id) {
-      this.cards = this.cards.filter(card => card.id !== id);
-    }
+
+    const getStartOfWeek = (date) => {
+      const day = date.getDay();
+      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      return new Date(date.setDate(diff));
+    };
+
+    const addCard = (index) => {
+      weekDays[index].cards.push({ id: Date.now() });
+    };
+
+    const removeCard = (index, id) => {
+      weekDays[index].cards = weekDays[index].cards.filter(card => card.id !== id);
+    };
+
+    const toggleDropdown = (index) => {
+      isDropdownOpen[index] = !isDropdownOpen[index];
+    };
+
+    const toggleWeekMenu = () => {
+      isWeekMenuOpen.value = !isWeekMenuOpen.value;
+    };
+
+    const toggleCalendar = () => {
+      isCalendarOpen.value = !isCalendarOpen.value;
+    };
+
+    const setWeekDays = (daysCount) => {
+      initializeWeekDays(daysCount);
+      isWeekMenuOpen.value = false;
+    };
+
+    const onDayClick = (day) => {
+      selectedDate.value = day.date;
+      initializeWeekDays(weekDays.length, day.date);
+      isCalendarOpen.value = false;
+    };
+
+    const closeWeekMenu = (event) => {
+      if (!event.target.closest('.week-menu-wrapper')) {
+        isWeekMenuOpen.value = false;
+      }
+    };
+
+    const closeCalendar = (event) => {
+      if (!event.target.closest('.calendar-wrapper')) {
+        isCalendarOpen.value = false;
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener('click', closeWeekMenu);
+      document.addEventListener('click', closeCalendar);
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('click', closeWeekMenu);
+      document.removeEventListener('click', closeCalendar);
+    });
+
+    initializeWeekDays(5); // Initialize with 5 days by default
+
+    return {
+      weekDays,
+      isDropdownOpen,
+      isWeekMenuOpen,
+      isCalendarOpen,
+      addCard,
+      removeCard,
+      toggleDropdown,
+      toggleWeekMenu,
+      toggleCalendar,
+      setWeekDays,
+      onDayClick
+    };
   }
 };
 </script>
@@ -96,7 +209,6 @@ export default {
   font-weight: 700;
   font-style: normal;
 }
-
 
 body {
   font-family: 'Inter', sans-serif;
@@ -222,10 +334,13 @@ main {
 
 .day-change-div {
   display: flex;
+  flex-direction: column;
+  cursor: pointer;
 }
 
 .day-change {
   display: flex;
+  align-items: center;
 }
 
 .h0 {
@@ -235,4 +350,86 @@ main {
   font-weight: bold;
 }
 
+.dropdown-content {
+  margin-top: 10px;
+}
+
+.arrow-icon {
+  transition: transform 0.3s ease;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-enter-active, .dropdown-leave-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.dropdown-enter, .dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.dropdown-enter-to, .dropdown-leave {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-enter-active, .card-leave-active {
+  transition: all 0.1s ease;
+}
+
+.card-enter, .card-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.card-enter-to, .card-leave {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.week-menu-wrapper {
+  position: absolute;
+  margin-top: 8px;
+  background-color: #333;
+  border-radius: 8px;
+  color: white;
+  width: 200px;
+}
+
+.week-menu-wrapper img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.stroke-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.img-menu {
+  margin-right: 8px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.1s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.calendar-wrapper {
+  position: absolute;
+  left: 133px;
+  margin-top: 8px;
+  background-color: #333;
+  border-radius: 8px;
+  color: white;
+}
 </style>
