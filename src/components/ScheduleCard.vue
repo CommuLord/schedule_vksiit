@@ -2,12 +2,19 @@
   <div class="card-container">
     <div class="card-top">
       <div class="card-left-top">
-        <button class="white-button">
+        <button class="white-button" @click.stop="toggleGroupMenu">
           <div class="button-content">
-            <p class="h4">Класс/Группа</p>
-            <img src="/src/assets/chedown.svg" alt="ched">
+            <p class="h4">{{ selectedGroup ? selectedGroup.name : 'Класс/Группа' }}</p>
+            <img :class="['save-icon', { 'rotate': isGroupMenuOpen }]" src="/src/assets/chedown.svg" alt="ched">
           </div>
         </button>
+        <transition name="fade">
+          <div v-if="isGroupMenuOpen" class="group-menu-wrapper" @click.stop>
+            <div class="stroke-wrapper" v-for="group in groups" :key="group.id" @click="selectGroup(group)">
+              <p class="h4">{{ group.name }}</p>
+            </div>
+          </div>
+        </transition>
       </div>
       <div class="card-delete">
         <button class="img-button" @click="deleteCard">
@@ -20,16 +27,70 @@
         <div class="table-row">
           <p class="h2 title-cell">Начало</p>
           <p class="h2 title-cell">Конец</p>
-          <p class="h2 title-cell">Предмет</p>
           <p class="h2 title-cell">Преподаватель</p>
+          <p class="h2 title-cell">Предмет</p>
           <p class="h2 title-cell">Кабинет</p>
         </div>
         <div class="table-row" v-for="(item, index) in schedule" :key="index">
           <input type="text" class="table-cell" v-model="item.start" @input="checkInput(index)">
           <input type="text" class="table-cell" v-model="item.end" @input="checkInput(index)">
-          <input type="text" class="table-cell" v-model="item.subject" @input="checkInput(index)">
-          <input type="text" class="table-cell" v-model="item.teacher" @input="checkInput(index)">
-          <input type="text" class="table-cell" v-model="item.room" @input="checkInput(index)">
+          <div class="table-cell-dropdown">
+            <button class="white-button" @click.stop="toggleTeacherMenu(index)">
+              <div class="button-content">
+                <p class="h4">{{ item.teacher ? formatTeacherName(item.teacher) : 'Преподаватель' }}</p>
+                <img :class="['save-icon', { 'rotate': isTeacherMenuOpen[index] }]" src="/src/assets/chedown.svg"
+                  alt="ched">
+              </div>
+            </button>
+            <transition name="fade">
+              <div v-if="isTeacherMenuOpen[index]" class="group-menu-wrapper" @click.stop>
+                <div class="stroke-wrapper" v-for="teacher in teachers" :key="teacher.id"
+                  @click="selectTeacher(teacher, index)">
+                  <p class="h4">{{ formatTeacherName(teacher) }}</p>
+                </div>
+              </div>
+            </transition>
+          </div>
+          <div class="table-cell-dropdown">
+            <button class="white-button" @click.stop="toggleSubjectMenu(index)">
+              <div class="button-content">
+                <p class="h4">{{ item.subject ? item.subject.name : 'Предмет' }}</p>
+                <img :class="['save-icon', { 'rotate': isSubjectMenuOpen[index] }]" src="/src/assets/chedown.svg"
+                  alt="ched">
+              </div>
+            </button>
+            <transition name="fade">
+              <div v-if="isSubjectMenuOpen[index]" class="group-menu-wrapper" @click.stop>
+                <div class="stroke-wrapper" v-for="subject in getSubjectsByTeacher(item.teacher)" :key="subject.id"
+                  @click="selectSubject(subject, index)">
+                  <p class="h4">{{ subject.name }}</p>
+                </div>
+              </div>
+            </transition>
+          </div>
+          <div class="table-cell-dropdown">
+            <button class="white-button" @click.stop="toggleCabinetMenu(index)">
+              <div class="button-content">
+                <p class="h4">{{ item.room || 'Кабинет' }}</p>
+                <img :class="['save-icon', { 'rotate': isCabinetMenuOpen[index] }]" src="/src/assets/chedown.svg"
+                  alt="ched">
+              </div>
+            </button>
+            <transition name="fade">
+              <div v-if="isCabinetMenuOpen[index]" class="group-menu-wrapper" @click.stop>
+                <div class="stroke-wrapper" v-for="cabinet in cabinets" :key="cabinet.id"
+                  @click="selectCabinet(cabinet, index)">
+                  <p class="h4">{{ cabinet.name }}</p>
+                </div>
+              </div>
+            </transition>
+          </div>
+          <button class="img-button"
+            :class="{ 'hidden': index === 0 || (index === schedule.length - 1 && isLastRowEmpty(index)) }"
+            @click="deleteRow(index)"
+            :disabled="index === 0 || (index === schedule.length - 1 && isLastRowEmpty(index))">
+            <img class="img-delete" src="/src/assets/Minus.svg" alt="delete">
+          </button>
         </div>
       </div>
     </div>
@@ -37,6 +98,13 @@
 </template>
 
 <script>
+import { ref, watch, onMounted, computed } from 'vue';
+import { useGroupsStore } from '@/stores/groups';
+import { useSubjectsStore } from '@/stores/subjects';
+import { useTeachersStore } from '@/stores/teachers';
+import { useCabinetsStore } from '@/stores/cabinets';
+import { useTeacherSubjectStore } from '@/stores/teacherSubject';
+
 export default {
   props: {
     id: {
@@ -44,27 +112,169 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      schedule: [
-        { start: '', end: '', subject: '', teacher: '', room: '' }
-      ]
-    };
-  },
-  methods: {
-    checkInput(index) {
-      const currentRow = this.schedule[index];
-      const isFilled = Object.values(currentRow).some(value => value.trim() !== '');
+  setup(props, { emit }) {
+    const groupsStore = useGroupsStore();
+    const subjectsStore = useSubjectsStore();
+    const teachersStore = useTeachersStore();
+    const cabinetsStore = useCabinetsStore();
+    const teacherSubjectStore = useTeacherSubjectStore();
 
-      if (isFilled && index === this.schedule.length - 1) {
-        this.schedule.push({ start: '', end: '', subject: '', teacher: '', room: '' });
-      } else if (!isFilled && index === this.schedule.length - 1 && this.schedule.length > 1) {
-        this.schedule.pop();
+    const groups = ref(groupsStore.groups);
+    const subjects = ref(subjectsStore.subjects);
+    const teachers = ref(teachersStore.teachers);
+    const cabinets = ref(cabinetsStore.cabinets);
+    const teacherSubjects = ref(teacherSubjectStore.teacherSubjects);
+
+    const selectedGroup = ref(null);
+    const isGroupMenuOpen = ref(false);
+    const isSubjectMenuOpen = ref([]);
+    const isTeacherMenuOpen = ref([]);
+    const isCabinetMenuOpen = ref([]);
+
+    const schedule = ref([
+      { start: '', end: '', subject: null, teacher: null, room: '', teacherSubjectId: null }
+    ]);
+
+    const toggleGroupMenu = () => {
+      isGroupMenuOpen.value = !isGroupMenuOpen.value;
+    };
+
+    const toggleSubjectMenu = (index) => {
+      isSubjectMenuOpen.value[index] = !isSubjectMenuOpen.value[index];
+    };
+
+    const toggleTeacherMenu = (index) => {
+      isTeacherMenuOpen.value[index] = !isTeacherMenuOpen.value[index];
+    };
+
+    const toggleCabinetMenu = (index) => {
+      isCabinetMenuOpen.value[index] = !isCabinetMenuOpen.value[index];
+    };
+
+    const selectGroup = (group) => {
+      selectedGroup.value = group;
+      isGroupMenuOpen.value = false;
+    };
+
+    const selectSubject = (subject, index) => {
+      schedule.value[index].subject = subject;
+      schedule.value[index].teacherSubjectId = teacherSubjects.value.find(ts => ts.subjectId === subject.id && ts.teacherId === schedule.value[index].teacher.id).id;
+      isSubjectMenuOpen.value[index] = false;
+      checkInput(index);
+    };
+
+    const selectTeacher = (teacher, index) => {
+      schedule.value[index].teacher = teacher;
+      schedule.value[index].subject = null;
+      isTeacherMenuOpen.value[index] = false;
+      checkInput(index);
+    };
+
+    const selectCabinet = (cabinet, index) => {
+      schedule.value[index].room = cabinet.name;
+      isCabinetMenuOpen.value[index] = false;
+      checkInput(index);
+    };
+
+    const checkInput = (index) => {
+      const currentRow = schedule.value[index];
+      const isFilled = Object.values(currentRow).some(value => value !== null && value !== '');
+      if (isFilled && index === schedule.value.length - 1) {
+        schedule.value.push({ start: '', end: '', subject: null, teacher: null, room: '', teacherSubjectId: null });
+        isSubjectMenuOpen.value.push(false);
+        isTeacherMenuOpen.value.push(false);
+        isCabinetMenuOpen.value.push(false);
+      } else if (!isFilled && index === schedule.value.length - 1 && schedule.value.length > 1) {
+        schedule.value.pop();
+        isSubjectMenuOpen.value.pop();
+        isTeacherMenuOpen.value.pop();
+        isCabinetMenuOpen.value.pop();
       }
-    },
-    deleteCard() {
-      this.$emit('delete', this.id);
-    }
+    };
+
+    const deleteRow = (index) => {
+      schedule.value.splice(index, 1);
+      isSubjectMenuOpen.value.splice(index, 1);
+      isTeacherMenuOpen.value.splice(index, 1);
+      isCabinetMenuOpen.value.splice(index, 1);
+    };
+
+    const deleteCard = () => {
+      emit('delete', props.id);
+    };
+
+    const formatTeacherName = (teacher) => {
+      return `${teacher.firstName} ${teacher.lastName ? teacher.lastName.charAt(0) + '.' : ''} ${teacher.middleName ? teacher.middleName.charAt(0) + '.' : ''}`.trim();
+    };
+
+    const isLastRowEmpty = (index) => {
+      const lastRow = schedule.value[index];
+      return Object.values(lastRow).every(value => value === null || value === '');
+    };
+
+    const getSubjectsByTeacher = computed(() => (teacher) => {
+      if (!teacher) return [];
+      return subjects.value.filter(subject => teacherSubjects.value.some(ts => ts.teacherId === teacher.id && ts.subjectId === subject.id));
+    });
+
+    watch(() => groupsStore.groups, (newGroups) => {
+      groups.value = newGroups;
+    });
+
+    watch(() => subjectsStore.subjects, (newSubjects) => {
+      subjects.value = newSubjects;
+    });
+
+    watch(() => teachersStore.teachers, (newTeachers) => {
+      teachers.value = newTeachers;
+    });
+
+    watch(() => cabinetsStore.cabinets, (newCabinets) => {
+      cabinets.value = newCabinets;
+    });
+
+    watch(() => teacherSubjectStore.teacherSubjects, (newTeacherSubjects) => {
+      teacherSubjects.value = newTeacherSubjects;
+    });
+
+    onMounted(() => {
+      subjectsStore.fetchSubjects();
+      teachersStore.fetchTeachers();
+      cabinetsStore.fetchCabinets();
+      teacherSubjectStore.fetchTeacherSubjects();
+    });
+
+    watch(schedule, (newSchedule) => {
+      emit('update:schedule', { id: props.id, selectedGroup: selectedGroup.value, schedule: newSchedule });
+    }, { deep: true });
+
+    return {
+      groups,
+      subjects,
+      teachers,
+      cabinets,
+      teacherSubjects,
+      selectedGroup,
+      isGroupMenuOpen,
+      isSubjectMenuOpen,
+      isTeacherMenuOpen,
+      isCabinetMenuOpen,
+      schedule,
+      toggleGroupMenu,
+      toggleSubjectMenu,
+      toggleTeacherMenu,
+      toggleCabinetMenu,
+      selectGroup,
+      selectSubject,
+      selectTeacher,
+      selectCabinet,
+      checkInput,
+      deleteRow,
+      deleteCard,
+      formatTeacherName,
+      isLastRowEmpty,
+      getSubjectsByTeacher
+    };
   }
 };
 </script>
@@ -73,16 +283,14 @@ export default {
 /* Общие стили для текста */
 @font-face {
   font-family: 'Inter';
-  src: url('/fonts/Inter-Regular.woff2') format('woff2'),
-       url('/fonts/Inter-Regular.woff') format('woff');
+  src: url('/fonts/Inter-Regular.woff2') format('woff2'), url('/fonts/Inter-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Inter';
-  src: url('/fonts/Inter-Bold.woff2') format('woff2'),
-       url('/fonts/Inter-Bold.woff') format('woff');
+  src: url('/fonts/Inter-Bold.woff2') format('woff2'), url('/fonts/Inter-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
 }
@@ -92,7 +300,12 @@ body {
   margin: 0;
 }
 
-body, p, .h1, .h2, .h3, .h4 {
+body,
+p,
+.h1,
+.h2,
+.h3,
+.h4 {
   font-family: 'Inter', sans-serif;
 }
 
@@ -268,16 +481,22 @@ main {
 
 .table-row {
   display: flex;
-  gap: 36px;
+  gap: 18px;
 }
 
-.table-cell {
+.table-cell,
+.table-cell-dropdown {
   flex: 1;
-  padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #D9D9D9;
   border-radius: 8px;
   transition: all 0.1s ease-in-out;
-  width: calc(100% / 5 - 36px * 4 / 5);
+  width: calc(20% - 18px);
+  box-sizing: border-box;
+  padding: none;
+}
+
+.table-cell-dropdown {
+  border: none;
 }
 
 .table-cell:focus {
@@ -287,6 +506,47 @@ main {
 }
 
 .title-cell {
-  flex: 1;
+  width: calc(20% - 25px);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.group-menu-wrapper {
+  position: absolute;
+  margin-top: 8px;
+  background-color: #333;
+  border-radius: 8px;
+  color: white;
+  width: 200px;
+}
+
+.stroke-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.img-menu {
+  margin-right: 8px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 </style>

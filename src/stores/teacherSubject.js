@@ -9,34 +9,60 @@ export const useTeacherSubjectStore = defineStore('teacherSubject', {
     teacherSubjects: [],
     teachers: [],
     subjects: [],
+    error: null,
   }),
   actions: {
     async fetchTeacherSubjects() {
-      const response = await TeacherSubjectService.getAll();
-      this.teacherSubjects = response.data;
+      try {
+        const response = await TeacherSubjectService.getAll();
+        this.teacherSubjects = response.data;
+      } catch (error) {
+        this.error = error;
+      }
     },
     async fetchTeachers() {
-      const response = await TeacherService.getAll();
-      this.teachers = response.data;
+      try {
+        const response = await TeacherService.getAll();
+        this.teachers = response.data;
+      } catch (error) {
+        this.error = error;
+      }
     },
     async fetchSubjects() {
-      const response = await SubjectService.getAll();
-      this.subjects = response.data;
+      try {
+        const response = await SubjectService.getAll();
+        this.subjects = response.data;
+      } catch (error) {
+        this.error = error;
+      }
     },
     async addTeacherSubject(data) {
-      const response = await TeacherSubjectService.create(data);
-      this.teacherSubjects.push(response.data);
+      try {
+        const response = await TeacherSubjectService.create(data);
+        this.teacherSubjects.push(response.data);
+      } catch (error) {
+        this.error = error;
+        throw error;
+      }
     },
     async updateTeacherSubject(id, data) {
-      const response = await TeacherSubjectService.update(id, data);
-      const index = this.teacherSubjects.findIndex(ts => ts.id === id);
-      if (index !== -1) {
-        this.teacherSubjects[index] = response.data;
+      try {
+        const response = await TeacherSubjectService.update(id, data);
+        const index = this.teacherSubjects.findIndex(ts => ts.id === id);
+        if (index !== -1) {
+          this.teacherSubjects[index] = response.data;
+        }
+      } catch (error) {
+        this.error = error;
       }
     },
     async deleteTeacherSubject(id) {
-      await TeacherSubjectService.delete(id);
-      this.teacherSubjects = this.teacherSubjects.filter(ts => ts.id !== id);
+      try {
+        await TeacherSubjectService.delete(id);
+        this.teacherSubjects = this.teacherSubjects.filter(ts => ts.id !== id);
+      } catch (error) {
+        this.error = error;
+      }
     },
   },
 });

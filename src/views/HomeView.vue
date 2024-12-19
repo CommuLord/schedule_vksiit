@@ -19,7 +19,7 @@
           </button>
         </div>
         <div class="button-container-end">
-          <button class="main-button margin-button">
+          <button class="main-button margin-button" @click="saveSchedule">
             <div class="button-content">
               <img src="/src/assets/Save.svg" alt="download" class="download-icon">
               <p class="h4 button-text">Сохранить</p>
@@ -53,14 +53,16 @@
       <div v-for="(day, index) in weekDays" :key="index" class="day-change-div">
         <div class="day-change" @click="toggleDropdown(index)">
           <p class="h0">{{ day.name }} - {{ day.date }}</p>
-          <img :class="['arrow-icon', { 'rotate': isDropdownOpen[index] }]" src="/src/assets/chedowntitle.svg" alt="chedown">
+          <img :class="['arrow-icon', { 'rotate': isDropdownOpen[index] }]" src="/src/assets/chedowntitle.svg"
+            alt="chedown">
         </div>
         <transition name="dropdown">
           <div v-show="isDropdownOpen[index]" class="dropdown-content">
             <transition-group name="card" tag="div" class="main-main">
-              <ScheduleCard v-for="card in day.cards" :key="card.id" @delete="removeCard(index, card.id)" @click.stop />
+              <ScheduleCard v-for="card in day.cards" :key="card.id" :id="card.id" @delete="removeCard(index, card.id)"
+                @update:schedule="updateCardSchedule(index, $event)" @click.stop />
             </transition-group>
-            <div class="new-day-container">
+            <div class="new-day-container" v-if="canAddCard(index)">
               <button class="main-button" @click.stop="addCard(index)">
                 <div class="button-content">
                   <img src="/src/assets/new.svg" alt="new" class="new-icon">
@@ -76,11 +78,13 @@
 </template>
 
 <script>
-import { reactive, ref, onMounted, onBeforeUnmount } from 'vue';
+import { reactive, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import ScheduleCard from '@/components/ScheduleCard.vue';
 import { Calendar } from 'v-calendar';
-import 'v-calendar/dist/style.css'; // Импорт стилей v-calendar
+import 'v-calendar/dist/style.css';
+import { useGroupsStore } from '@/stores/groups';
+import apiClient from '@/axios';
 
 export default {
   name: 'HomeView',
@@ -95,25 +99,27 @@ export default {
     const isWeekMenuOpen = ref(false);
     const isCalendarOpen = ref(false);
     const selectedDate = ref(null);
+    const groupsStore = useGroupsStore();
 
     const initializeWeekDays = (daysCount, startDate = new Date()) => {
       const startOfWeek = getStartOfWeek(startDate);
       const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 
-      weekDays.length = 0; // Clear the array
+      weekDays.length = 0;
       weekDays.push(...daysOfWeek.slice(0, daysCount).map((dayName, index) => {
         const date = new Date(startOfWeek);
         date.setDate(startOfWeek.getDate() + index);
         return {
           name: dayName,
-          date: date.toLocaleDateString(),
-          cards: []
+          date: date.toISOString().split('T')[0],
+          cards: groupsStore.groups.map(group => ({ id: group.id, name: group.name, selectedGroup: group, schedule: [] }))
         };
       }));
 
-      isDropdownOpen.length = 0; // Clear the array
+      isDropdownOpen.length = 0;
       isDropdownOpen.push(...new Array(weekDays.length).fill(false));
     };
+
 
     const getStartOfWeek = (date) => {
       const day = date.getDay();
@@ -122,11 +128,18 @@ export default {
     };
 
     const addCard = (index) => {
-      weekDays[index].cards.push({ id: Date.now() });
+      weekDays[index].cards.push({ id: Date.now(), selectedGroup: null, schedule: [] });
     };
 
     const removeCard = (index, id) => {
       weekDays[index].cards = weekDays[index].cards.filter(card => card.id !== id);
+    };
+
+    const updateCardSchedule = (index, updatedCard) => {
+      const cardIndex = weekDays[index].cards.findIndex(card => card.id === updatedCard.id);
+      if (cardIndex !== -1) {
+        weekDays[index].cards[cardIndex] = updatedCard;
+      }
     };
 
     const toggleDropdown = (index) => {
@@ -164,9 +177,105 @@ export default {
       }
     };
 
+    const canAddCard = (index) => {
+      return weekDays[index].cards.length < groupsStore.groups.length;
+    };
+
+    const collectScheduleData = () => {
+      const scheduleBlocks = [];
+
+      weekDays.forEach((day, dayIndex) => {
+        if (day.cards) {
+          day.cards.forEach((card, cardIndex) => {
+            console.log(`Processing day ${dayIndex + 1}, card ${cardIndex + 1}`);
+            console.log('Card data:', card);
+            if (card.selectedGroup && card.schedule) {
+              const scheduleLessons = card.schedule
+                .filter((lesson, index) => {
+                  if (index === card.schedule.length - 1 && Object.values(lesson).every(value => value === null || value === '')) {
+                    return false;
+                  }
+                  return lesson.start && lesson.end && lesson.teacherSubjectId && lesson.room;
+                })
+                .map((lesson, lessonIndex) => {
+                  console.log(`Processing lesson ${lessonIndex + 1} for card ${cardIndex + 1}`);
+                  return {
+                    lessonOrder: lessonIndex + 1,
+                    startLesson: lesson.start,
+                    endLesson: lesson.end,
+                    teacherSubjectId: lesson.teacherSubjectId,
+                  };
+                });
+
+              if (scheduleLessons.length > 0) {
+                scheduleBlocks.push({
+                  groupId: card.selectedGroup.id,
+                  scheduleDate: new Date(day.date),
+                  scheduleLessons,
+                });
+              }
+            }
+          });
+        }
+      });
+
+      console.log('Collected schedule data:', { scheduleBlocks });
+      return { scheduleBlocks };
+    };
+
+    const validateSchedule = () => {
+      let isValid = true;
+      let errorMessage = '';
+
+      weekDays.forEach((day) => {
+        if (day.cards) {
+          day.cards.forEach((card) => {
+            if (!card.selectedGroup) {
+              isValid = false;
+              errorMessage = 'Пожалуйста, выберите группу для всех карточек.';
+            } else if (card.schedule) {
+              card.schedule.forEach((lesson, index) => {
+                if (index === card.schedule.length - 1 && Object.values(lesson).every(value => value === null || value === '')) {
+                  return;
+                }
+                if (!lesson.start || !lesson.end || !lesson.subject || !lesson.teacher || !lesson.room) {
+                  isValid = false;
+                  errorMessage = 'Пожалуйста, заполните все поля для всех уроков.';
+                }
+              });
+            }
+          });
+        }
+      });
+
+      if (!isValid) {
+        alert(errorMessage);
+      }
+
+      return isValid;
+    };
+
+
+    const saveSchedule = async () => {
+      if (!validateSchedule()) {
+        return;
+      }
+
+      const scheduleData = collectScheduleData();
+      console.log('Sending schedule data:', scheduleData);
+
+      try {
+        const response = await apiClient.post('/schedule', scheduleData);
+        alert('Расписание успешно сохранено.');
+      } catch (error) {
+        alert('Ошибка при сохранении расписания: ' + error.message);
+      }
+    };
+
     onMounted(() => {
       document.addEventListener('click', closeWeekMenu);
       document.addEventListener('click', closeCalendar);
+      groupsStore.fetchGroups();
     });
 
     onBeforeUnmount(() => {
@@ -174,7 +283,11 @@ export default {
       document.removeEventListener('click', closeCalendar);
     });
 
-    initializeWeekDays(5); // Initialize with 5 days by default
+    watch(() => groupsStore.groups, () => {
+      initializeWeekDays(weekDays.length);
+    });
+
+    initializeWeekDays(5);
 
     return {
       weekDays,
@@ -183,11 +296,14 @@ export default {
       isCalendarOpen,
       addCard,
       removeCard,
+      updateCardSchedule,
       toggleDropdown,
       toggleWeekMenu,
       toggleCalendar,
       setWeekDays,
-      onDayClick
+      onDayClick,
+      canAddCard,
+      saveSchedule
     };
   }
 };
@@ -197,7 +313,7 @@ export default {
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter-Regular.woff2') format('woff2'),
-       url('/fonts/Inter-Regular.woff') format('woff');
+    url('/fonts/Inter-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
@@ -205,7 +321,7 @@ export default {
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter-Bold.woff2') format('woff2'),
-       url('/fonts/Inter-Bold.woff') format('woff');
+    url('/fonts/Inter-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
 }
@@ -215,7 +331,12 @@ body {
   margin: 0;
 }
 
-body, p, .h1, .h2, .h3, .h4 {
+body,
+p,
+.h1,
+.h2,
+.h3,
+.h4 {
   font-family: 'Inter', sans-serif;
 }
 
@@ -362,30 +483,36 @@ main {
   transform: rotate(180deg);
 }
 
-.dropdown-enter-active, .dropdown-leave-active {
+.dropdown-enter-active,
+.dropdown-leave-active {
   transition: opacity 0.3s, transform 0.3s;
 }
 
-.dropdown-enter, .dropdown-leave-to {
+.dropdown-enter,
+.dropdown-leave-to {
   opacity: 0;
   transform: translateY(-10px);
 }
 
-.dropdown-enter-to, .dropdown-leave {
+.dropdown-enter-to,
+.dropdown-leave {
   opacity: 1;
   transform: translateY(0);
 }
 
-.card-enter-active, .card-leave-active {
+.card-enter-active,
+.card-leave-active {
   transition: all 0.1s ease;
 }
 
-.card-enter, .card-leave-to {
+.card-enter,
+.card-leave-to {
   opacity: 0;
   transform: translateY(10px);
 }
 
-.card-enter-to, .card-leave {
+.card-enter-to,
+.card-leave {
   opacity: 1;
   transform: translateY(0);
 }
@@ -416,11 +543,13 @@ main {
   margin-right: 8px;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.1s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 

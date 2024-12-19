@@ -5,66 +5,34 @@
       <div class="source-container">
         <div class="input-an-wrapper">
           <div class="input-wrapper first-input">
-            <input type="text" placeholder="Предмет" class="source-add">
-            <img src="/src/assets/Arrow-black-down.svg" alt="arrow" class="arrow-icon">
+            <select v-model="selectedTeacherSubject" class="source-add">
+              <option value="" disabled>Выберите учителя и предмет</option>
+              <option v-for="ts in teacherSubjects" :key="ts.id" :value="ts.id">
+                {{ getTeacherName(ts.teacherId) }} - {{ getSubjectName(ts.subjectId) }}
+              </option>
+            </select>
           </div>
           <div class="input-wrapper second-input">
-            <input type="text" placeholder="Время на предмет" class="source-add">
+            <input v-model="subjectTime" type="number" placeholder="Время на предмет" class="source-add">
+          </div>
+          <div class="input-wrapper third-input">
+            <input v-model="studyYear" type="number" placeholder="Учебный год" class="source-add">
+          </div>
+          <div class="button-container">
+            <button class="accept-button" @click="addSubjectTime">
+              <p class="h4 button-text">Добавить</p>
+            </button>
           </div>
         </div>
         <div class="table-cells">
-          <div class="cell">
+          <div v-for="st in subjectTimes" :key="st.studyYear" class="cell">
             <div class="cell-text">
-              <p class="h4">Английский</p>
+              <p class="h4">{{ getTeacherSubjectName(st.teacherSubjectId) }} - {{ st.subjectTime }} часов в {{ st.studyYear }} году</p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Английский</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Английский</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Английский</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
-              </div>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-text">
-              <p class="h4">Английский</p>
-            </div>
-            <div class="buttons">
-              <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button">
+                <img src="/src/assets/Edit.svg" alt="edit" class="button" @click="editSubjectTime(st)">
+                <img src="/src/assets/Trash.svg" alt="delete" class="button" @click="deleteSubjectTime(st.studyYear)">
               </div>
             </div>
           </div>
@@ -75,8 +43,83 @@
 </template>
 
 <script>
+import { useSubjectTimeStore } from '@/stores/subjectTime';
+import { useTeacherSubjectStore } from '@/stores/teacherSubject';
+
 export default {
-  name: 'TimeSubjectsComponent'
+  name: 'TimeSubjectsComponent',
+  data() {
+    return {
+      selectedTeacherSubject: '',
+      subjectTime: '',
+      studyYear: '',
+    };
+  },
+  computed: {
+    subjectTimes() {
+      return this.subjectTimeStore.subjectTimes;
+    },
+    teacherSubjects() {
+      return this.teacherSubjectStore.teacherSubjects;
+    },
+    teachers() {
+      return this.teacherSubjectStore.teachers;
+    },
+    subjects() {
+      return this.teacherSubjectStore.subjects;
+    },
+  },
+  created() {
+    this.subjectTimeStore.fetchSubjectTimes();
+    this.teacherSubjectStore.fetchTeacherSubjects();
+    this.teacherSubjectStore.fetchTeachers();
+    this.teacherSubjectStore.fetchSubjects();
+  },
+  methods: {
+    async addSubjectTime() {
+      if (this.selectedTeacherSubject && this.subjectTime && this.studyYear) {
+        try {
+          await this.subjectTimeStore.addSubjectTime({
+            studyYear: this.studyYear,
+            teacherSubjectId: this.selectedTeacherSubject,
+            subjectTime: this.subjectTime,
+          });
+          this.selectedTeacherSubject = '';
+          this.subjectTime = '';
+          this.studyYear = '';
+          this.subjectTimeStore.fetchSubjectTimes();
+        } catch (error) {
+          alert('An error occurred');
+        }
+      }
+    },
+    getTeacherName(teacherId) {
+      const teacher = this.teachers.find(t => t.id === teacherId);
+      return teacher ? `${teacher.firstName} ${teacher.lastName} ${teacher.middleName ? teacher.middleName : ''}` : '';
+    },
+    getSubjectName(subjectId) {
+      const subject = this.subjects.find(s => s.id === subjectId);
+      return subject ? subject.name : '';
+    },
+    getTeacherSubjectName(teacherSubjectId) {
+      const teacherSubject = this.teacherSubjects.find(ts => ts.id === teacherSubjectId);
+      return teacherSubject ? `${this.getTeacherName(teacherSubject.teacherId)} - ${this.getSubjectName(teacherSubject.subjectId)}` : '';
+    },
+    editSubjectTime(st) {
+      // Логика редактирования
+    },
+    deleteSubjectTime(studyYear) {
+      this.subjectTimeStore.deleteSubjectTime(studyYear);
+    },
+  },
+  setup() {
+    const subjectTimeStore = useSubjectTimeStore();
+    const teacherSubjectStore = useTeacherSubjectStore();
+    return {
+      subjectTimeStore,
+      teacherSubjectStore,
+    };
+  },
 };
 </script>
 

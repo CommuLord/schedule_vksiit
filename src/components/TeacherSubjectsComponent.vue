@@ -23,7 +23,9 @@
         <div class="table-cells">
           <div v-for="ts in teacherSubjects" :key="ts.id" class="cell">
             <div class="cell-text">
-              <p class="h4">{{ ts.teacher?.firstName }} {{ ts.teacher?.lastName }} - {{ ts.subject?.name }}</p>
+              <p class="h4">
+                {{ getTeacherName(ts.teacherId) }} - {{ getSubjectName(ts.subjectId) }}
+              </p>
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
@@ -85,6 +87,14 @@ export default {
         }
       }
     },
+    getTeacherName(teacherId) {
+      const teacher = this.teachers.find(t => t.id === teacherId);
+      return teacher ? `${teacher.firstName} ${teacher.lastName} ${teacher.middleName ? teacher.middleName : ''}` : '';
+    },
+    getSubjectName(subjectId) {
+      const subject = this.subjects.find(s => s.id === subjectId);
+      return subject ? subject.name : '';
+    },
     editTeacherSubject(ts) {
       // Логика редактирования
     },
@@ -100,6 +110,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 @font-face {
