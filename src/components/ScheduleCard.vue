@@ -132,7 +132,7 @@ export default {
     const isCabinetMenuOpen = ref([]);
 
     const schedule = ref([
-      { start: '', end: '', subject: null, teacher: null, room: '', teacherSubjectId: null }
+      { start: '', end: '', subject: null, teacher: null, room: '', teacherSubjectId: null, cabinetId: null }
     ]);
 
     const toggleGroupMenu = () => {
@@ -165,13 +165,15 @@ export default {
 
     const selectTeacher = (teacher, index) => {
       schedule.value[index].teacher = teacher;
-      schedule.value[index].subject = null;
+      schedule.value[index].subject = null; // Сброс предмета при выборе нового учителя
       isTeacherMenuOpen.value[index] = false;
       checkInput(index);
     };
 
     const selectCabinet = (cabinet, index) => {
       schedule.value[index].room = cabinet.name;
+      schedule.value[index].cabinetId = cabinet.id; // Добавление cabinetId
+      console.log(`Selected cabinet: ${cabinet.name}, cabinetId: ${cabinet.id}`); // Логирование
       isCabinetMenuOpen.value[index] = false;
       checkInput(index);
     };
@@ -180,7 +182,7 @@ export default {
       const currentRow = schedule.value[index];
       const isFilled = Object.values(currentRow).some(value => value !== null && value !== '');
       if (isFilled && index === schedule.value.length - 1) {
-        schedule.value.push({ start: '', end: '', subject: null, teacher: null, room: '', teacherSubjectId: null });
+        schedule.value.push({ start: '', end: '', subject: null, teacher: null, room: '', teacherSubjectId: null, cabinetId: null });
         isSubjectMenuOpen.value.push(false);
         isTeacherMenuOpen.value.push(false);
         isCabinetMenuOpen.value.push(false);
@@ -278,6 +280,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 /* Общие стили для текста */

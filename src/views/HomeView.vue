@@ -120,11 +120,11 @@ export default {
       isDropdownOpen.push(...new Array(weekDays.length).fill(false));
     };
 
-
     const getStartOfWeek = (date) => {
       const day = date.getDay();
       const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-      return new Date(date.setDate(diff));
+      const startOfWeek = new Date(date.setDate(diff));
+      return startOfWeek;
     };
 
     const addCard = (index) => {
@@ -183,7 +183,6 @@ export default {
 
     const collectScheduleData = () => {
       const scheduleBlocks = [];
-
       weekDays.forEach((day, dayIndex) => {
         if (day.cards) {
           day.cards.forEach((card, cardIndex) => {
@@ -195,7 +194,7 @@ export default {
                   if (index === card.schedule.length - 1 && Object.values(lesson).every(value => value === null || value === '')) {
                     return false;
                   }
-                  return lesson.start && lesson.end && lesson.teacherSubjectId && lesson.room;
+                  return lesson.start && lesson.end && lesson.teacherSubjectId && lesson.room && lesson.cabinetId; // Добавление проверки cabinetId
                 })
                 .map((lesson, lessonIndex) => {
                   console.log(`Processing lesson ${lessonIndex + 1} for card ${cardIndex + 1}`);
@@ -204,21 +203,21 @@ export default {
                     startLesson: lesson.start,
                     endLesson: lesson.end,
                     teacherSubjectId: lesson.teacherSubjectId,
+                    cabinetId: lesson.cabinetId // Добавление cabinetId
                   };
                 });
-
               if (scheduleLessons.length > 0) {
                 scheduleBlocks.push({
                   groupId: card.selectedGroup.id,
                   scheduleDate: new Date(day.date),
                   scheduleLessons,
+                  cabinetId: card.schedule[0].cabinetId // Добавление cabinetId
                 });
               }
             }
           });
         }
       });
-
       console.log('Collected schedule data:', { scheduleBlocks });
       return { scheduleBlocks };
     };
@@ -238,7 +237,7 @@ export default {
                 if (index === card.schedule.length - 1 && Object.values(lesson).every(value => value === null || value === '')) {
                   return;
                 }
-                if (!lesson.start || !lesson.end || !lesson.subject || !lesson.teacher || !lesson.room) {
+                if (!lesson.start || !lesson.end || !lesson.subject || !lesson.teacher || !lesson.room || !lesson.cabinetId) { // Добавление проверки cabinetId
                   isValid = false;
                   errorMessage = 'Пожалуйста, заполните все поля для всех уроков.';
                 }
@@ -255,14 +254,13 @@ export default {
       return isValid;
     };
 
-
     const saveSchedule = async () => {
       if (!validateSchedule()) {
         return;
       }
 
       const scheduleData = collectScheduleData();
-      console.log('Sending schedule data:', scheduleData);
+      console.log('Sending schedule data:', JSON.stringify(scheduleData, null, 2)); // Логирование данных
 
       try {
         const response = await apiClient.post('/schedule', scheduleData);
@@ -308,6 +306,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 @font-face {

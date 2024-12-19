@@ -6,6 +6,7 @@ import ArchiveView from '../views/ArchiveView.vue';
 import SourceDataView from '../views/SourceDataView.vue';
 import NotFoundView from '../views/NotFoundView.vue';
 import { useAuthStore } from '@/stores/auth';
+import ScheduleDetailView from '@/views/ScheduleDetailView.vue';
 
 const routes = [
   {
@@ -35,6 +36,12 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: NotFoundView
+  },
+  {
+    path: '/schedule/:id',
+    name: 'ScheduleDetail',
+    component: ScheduleDetailView,
+    meta: { requiresAuth: true }
   }
 ];
 

@@ -15,10 +15,15 @@
       <div v-for="(group, key) in groupedSchedules" :key="key" class="archive-section">
         <p class="h0 section-title">{{ key }}</p>
         <div class="archive-items">
-          <button v-for="(schedule, index) in group" :key="schedule.id" class="archive-item">
+          <router-link
+            v-for="(schedule, index) in group"
+            :key="schedule.id"
+            :to="{ name: 'ScheduleDetail', params: { id: schedule.id } }"
+            class="archive-item"
+          >
             <p class="h2 archive-item-id">#{{ index + 1 }}</p>
             <p class="h2 archive-item-date">{{ formatDate(schedule.creationDate) }}</p>
-          </button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -65,6 +70,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 @font-face {

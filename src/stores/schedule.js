@@ -6,40 +6,64 @@ export const useScheduleStore = defineStore('schedule', {
   state: () => ({
     schedules: [],
     loading: false,
-    error: null,
   }),
   actions: {
     async fetchSchedules() {
       this.loading = true;
-      this.error = null;
       try {
         const response = await apiClient.get('/schedule');
         this.schedules = response.data;
-        this.sortSchedules();
-        console.log('Schedules loaded:', this.schedules); // Добавлен консольный лог
       } catch (error) {
-        this.error = error;
-        console.error('Error loading schedules:', error); // Добавлен консольный лог
+        console.error('Ошибка при загрузке расписаний:', error);
       } finally {
         this.loading = false;
       }
     },
-    sortSchedules() {
-      this.schedules.sort((a, b) => new Date(a.creationDate) - new Date(b.creationDate));
-    },
+    async fetchScheduleById(id) {
+      this.loading = true;
+      try {
+        console.log(`Fetching schedule with ID: ${id}`);
+        const response = await apiClient.get(`/schedule/${id}`, {
+          params: {
+            relations: ['scheduleBlocks', 'scheduleBlocks.scheduleLessons']
+          }
+        });
+        console.log('Fetched schedule:', response.data);
+        return response.data;
+      } catch (error) {
+        console.error('Ошибка при загрузке расписания:', error);
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    }
+    ,
     groupSchedules() {
       const grouped = {};
       this.schedules.forEach(schedule => {
-        const date = new Date(schedule.creationDate);
-        let month = date.toLocaleString('ru-RU', { month: 'long' });
-        month = month.charAt(0).toUpperCase() + month.slice(1);
-        const key = `${month} ${date.getFullYear()}`;
-        if (!grouped[key]) {
-          grouped[key] = [];
+        const date = new Date(schedule.creationDate).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        if (!grouped[date]) {
+          grouped[date] = [];
         }
-        grouped[key].push(schedule);
+        grouped[date].push(schedule);
       });
       return grouped;
-    }
+    },
+    groupScheduleBlocksByDate(schedule) {
+      const grouped = {};
+      schedule.scheduleBlocks.forEach(block => {
+        const date = new Date(block.scheduleDate).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        if (!grouped[date]) {
+          grouped[date] = [];
+        }
+        grouped[date].push(block);
+      });
+      return grouped;
+    },
+  },
+  getters: {
+    getScheduleById: (state) => (id) => {
+      return state.schedules.find(schedule => schedule.id === id);
+    },
   },
 });

@@ -1,19 +1,24 @@
-<!-- src/components/TeacherSubjectsComponent.vue -->
 <template>
   <div>
     <main>
       <div class="source-container">
         <div class="select-container">
-          <select v-model="selectedTeacher" class="source-add">
-            <option value="" disabled>Выберите учителя</option>
-            <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
-              {{ teacher.firstName }} {{ teacher.lastName }} {{ teacher.middleName ? teacher.middleName : '' }}
-            </option>
-          </select>
-          <select v-model="selectedSubject" class="source-add">
-            <option value="" disabled>Выберите предмет</option>
-            <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.name }}</option>
-          </select>
+          <div class="select-wrapper">
+            <select v-model="selectedTeacher" class="source-add" @focus="isTeacherMenuOpen = true" @blur="isTeacherMenuOpen = false" @change="isTeacherMenuOpen = false">
+              <option value="" disabled>Выберите учителя</option>
+              <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
+                {{ teacher.firstName }} {{ teacher.lastName }} {{ teacher.middleName ? teacher.middleName : '' }}
+              </option>
+            </select>
+            <img :class="['save-icon', { 'rotate': isTeacherMenuOpen }]" src="/src/assets/chedown.svg" alt="ched">
+          </div>
+          <div class="select-wrapper">
+            <select v-model="selectedSubject" class="source-add" @focus="isSubjectMenuOpen = true" @blur="isSubjectMenuOpen = false" @change="isSubjectMenuOpen = false">
+              <option value="" disabled>Выберите предмет</option>
+              <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.name }}</option>
+            </select>
+            <img :class="['save-icon', { 'rotate': isSubjectMenuOpen }]" src="/src/assets/chedown.svg" alt="ched">
+          </div>
         </div>
         <div class="button-container">
           <button class="accept-button" @click="addTeacherSubject">
@@ -49,6 +54,8 @@ export default {
     return {
       selectedTeacher: '',
       selectedSubject: '',
+      isTeacherMenuOpen: false,
+      isSubjectMenuOpen: false,
     };
   },
   computed: {
@@ -111,7 +118,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 @font-face {
   font-family: 'Inter';
@@ -162,6 +168,12 @@ body, p, .h1, .h2, .h3, .h4 {
 .source-add {
   font-size: 16px;
   transition: all 0.1s ease-in-out;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: none;
+  padding-right: 30px; /* Добавим отступ для стрелочки */
 }
 
 select {
@@ -187,6 +199,24 @@ select {
   display: flex;
   justify-content: flex-start; /* Выравнивание по левому краю */
   gap: 10px; /* Добавим небольшой отступ между полями */
+}
+
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.save-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: transform 0.1s ease-in-out;
+}
+
+.rotate {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .table-cells {
