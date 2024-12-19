@@ -192,13 +192,13 @@ select {
 .source-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 877px;
 }
 
 .select-container {
   display: flex;
-  justify-content: flex-start; /* Выравнивание по левому краю */
-  gap: 10px; /* Добавим небольшой отступ между полями */
+  justify-content: flex-start;
+  gap: 8px; 
 }
 
 .select-wrapper {
@@ -229,6 +229,7 @@ select {
 }
 
 .cell {
+  margin-top: 8px;
   border-bottom: #D9D9D9 1px dotted;
   color: #1E1E1E;
   display: flex;
@@ -262,7 +263,7 @@ select {
 }
 
 .button-container {
-  margin-top: 20px;
+  margin-top: 12px;
   display: flex;
   justify-content: center;
 }
@@ -274,7 +275,7 @@ select {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
-  padding: 10px 0; /* Добавим паддинг для кнопки */
+  padding: 8px 0; 
 }
 
 .accept-button:hover {

@@ -149,7 +149,7 @@ input {
 .source-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 877px;
 }
 
 .table-cells {
@@ -162,6 +162,7 @@ input {
 }
 
 .cell {
+  margin-top: 8px;
   border-bottom: #D9D9D9 1px dotted;
   color: #1E1E1E;
   display: flex;

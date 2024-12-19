@@ -5,12 +5,15 @@
       <div class="source-container">
         <div class="input-an-wrapper">
           <div class="input-wrapper first-input">
-            <select v-model="selectedTeacherSubject" class="source-add">
-              <option value="" disabled>Выберите учителя и предмет</option>
-              <option v-for="ts in teacherSubjects" :key="ts.id" :value="ts.id">
-                {{ getTeacherName(ts.teacherId) }} - {{ getSubjectName(ts.subjectId) }}
-              </option>
-            </select>
+            <div class="select-wrapper">
+              <select v-model="selectedTeacherSubject" class="source-add" @focus="isTeacherSubjectMenuOpen = true" @blur="isTeacherSubjectMenuOpen = false" @change="isTeacherSubjectMenuOpen = false">
+                <option value="" disabled>Выберите учителя и предмет</option>
+                <option v-for="ts in teacherSubjects" :key="ts.id" :value="ts.id">
+                  {{ getTeacherName(ts.teacherId) }} - {{ getSubjectName(ts.subjectId) }}
+                </option>
+              </select>
+              <img :class="['save-icon', { 'rotate': isTeacherSubjectMenuOpen }]" src="/src/assets/chedown.svg" alt="ched">
+            </div>
           </div>
           <div class="input-wrapper second-input">
             <input v-model="subjectTime" type="number" placeholder="Время на предмет" class="source-add">
@@ -18,11 +21,11 @@
           <div class="input-wrapper third-input">
             <input v-model="studyYear" type="number" placeholder="Учебный год" class="source-add">
           </div>
-          <div class="button-container">
-            <button class="accept-button" @click="addSubjectTime">
-              <p class="h4 button-text">Добавить</p>
-            </button>
-          </div>
+        </div>
+        <div class="button-container">
+          <button class="accept-button" @click="addSubjectTime">
+            <p class="h4 button-text">Добавить</p>
+          </button>
         </div>
         <div class="table-cells">
           <div v-for="st in subjectTimes" :key="st.studyYear" class="cell">
@@ -53,6 +56,7 @@ export default {
       selectedTeacherSubject: '',
       subjectTime: '',
       studyYear: '',
+      isTeacherSubjectMenuOpen: false,
     };
   },
   computed: {
@@ -178,6 +182,11 @@ body, p, .h1, .h2, .h3, .h4 {
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: none;
+  padding-right: 30px; /* Добавим отступ для стрелочки */
 }
 
 .input-an-wrapper {
@@ -199,14 +208,22 @@ body, p, .h1, .h2, .h3, .h4 {
   flex: 1;
 }
 
-.arrow-icon {
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.save-icon {
   position: absolute;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  width: 20px;
-  height: auto;
+  transition: transform 0.1s ease-in-out;
+}
+
+.rotate {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .source-add:focus {
@@ -218,7 +235,7 @@ body, p, .h1, .h2, .h3, .h4 {
 .source-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 877px;
 }
 
 .table-cells {
@@ -231,6 +248,7 @@ body, p, .h1, .h2, .h3, .h4 {
 }
 
 .cell {
+  margin-top: 8px;
   border-bottom: #D9D9D9 1px dotted;
   color: #1E1E1E;
   display: flex;
@@ -261,5 +279,37 @@ body, p, .h1, .h2, .h3, .h4 {
 .button:active {
   transform: translateY(2px);
   box-shadow: none;
+}
+
+.button-container {
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+}
+
+.accept-button {
+  width: 100%;
+  background-color: #2c2c2c;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  padding: 8px 0;
+}
+
+.accept-button:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.accept-button:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.button-text {
+  color: white;
+  margin: 0;
 }
 </style>

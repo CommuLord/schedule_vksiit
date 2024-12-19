@@ -27,11 +27,11 @@
         </div>
       </div>
     </div>
-    <button class="main-button show-more-button">
+    <!--<button class="main-button show-more-button">
       <div class="button-content">
         <p class="h4 button-text">Показать ещё</p>
       </div>
-    </button>
+    </button>-->
   </div>
 </template>
 
@@ -164,7 +164,7 @@ main {
   box-sizing: border-box;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
-  width: calc(14.2857% - 20px); /* Фиксированная ширина для 7 элементов в строке */
+  width: calc(14.2857% - 20px);
 }
 
 .archive-item:hover {
@@ -182,6 +182,7 @@ main {
 .archive-item-id {
   font-weight: bold;
   margin-bottom: 5px;
+  color: black;
 }
 
 .archive-item-date {
@@ -189,28 +190,27 @@ main {
   color: #333;
 }
 
-/* Медиазапросы для адаптивного количества элементов в строке */
 @media (min-width: 1920px) {
   .archive-item {
-    width: calc(14.2857% - 20px); /* 7 элементов в строке */
+    width: calc(14.2857% - 20px);
   }
 }
 
 @media (min-width: 1200px) and (max-width: 1919px) {
   .archive-item {
-    width: calc(25% - 20px); /* 4 элемента в строке */
+    width: calc(25% - 20px);
   }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
   .archive-item {
-    width: calc(33.333% - 20px); /* 3 элемента в строке */
+    width: calc(33.333% - 20px);
   }
 }
 
 @media (max-width: 991px) {
   .archive-item {
-    width: calc(50% - 20px); /* 2 элемента в строке */
+    width: calc(50% - 20px);
   }
 }
 
@@ -296,5 +296,9 @@ main {
 .main-button:active {
   transform: translateY(2px);
   box-shadow: none;
+}
+
+a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
 }
 </style>

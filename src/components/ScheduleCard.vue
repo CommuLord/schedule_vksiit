@@ -11,7 +11,7 @@
         <transition name="fade">
           <div v-if="isGroupMenuOpen" class="group-menu-wrapper" @click.stop>
             <div class="stroke-wrapper" v-for="group in groups" :key="group.id" @click="selectGroup(group)">
-              <p class="h4">{{ group.name }}</p>
+              <p class="group-text h4">{{ group.name }}</p>
             </div>
           </div>
         </transition>
@@ -24,7 +24,7 @@
     </div>
     <div class="card-main">
       <div class="table-container">
-        <div class="table-row">
+        <div class="title-row">
           <p class="h2 title-cell">Начало</p>
           <p class="h2 title-cell">Конец</p>
           <p class="h2 title-cell">Преподаватель</p>
@@ -43,7 +43,7 @@
               </div>
             </button>
             <transition name="fade">
-              <div v-if="isTeacherMenuOpen[index]" class="group-menu-wrapper" @click.stop>
+              <div v-if="isTeacherMenuOpen[index]" class="teacher-menu-wrapper" @click.stop>
                 <div class="stroke-wrapper" v-for="teacher in teachers" :key="teacher.id"
                   @click="selectTeacher(teacher, index)">
                   <p class="h4">{{ formatTeacherName(teacher) }}</p>
@@ -60,7 +60,7 @@
               </div>
             </button>
             <transition name="fade">
-              <div v-if="isSubjectMenuOpen[index]" class="group-menu-wrapper" @click.stop>
+              <div v-if="isSubjectMenuOpen[index]" class="subject-menu-wrapper" @click.stop>
                 <div class="stroke-wrapper" v-for="subject in getSubjectsByTeacher(item.teacher)" :key="subject.id"
                   @click="selectSubject(subject, index)">
                   <p class="h4">{{ subject.name }}</p>
@@ -77,7 +77,7 @@
               </div>
             </button>
             <transition name="fade">
-              <div v-if="isCabinetMenuOpen[index]" class="group-menu-wrapper" @click.stop>
+              <div v-if="isCabinetMenuOpen[index]" class="cabinet-menu-wrapper" @click.stop>
                 <div class="stroke-wrapper" v-for="cabinet in cabinets" :key="cabinet.id"
                   @click="selectCabinet(cabinet, index)">
                   <p class="h4">{{ cabinet.name }}</p>
@@ -280,7 +280,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 /* Общие стили для текста */
@@ -496,6 +495,7 @@ main {
   width: calc(20% - 18px);
   box-sizing: border-box;
   padding: none;
+  margin: 0 !important;
 }
 
 .table-cell-dropdown {
@@ -508,19 +508,36 @@ main {
   box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
 }
 
+.title-row {
+  gap: 18px;
+  display: flex;
+}
+
 .title-cell {
-  width: calc(20% - 25px);
+  width: 343px;
   box-sizing: border-box;
   text-align: left;
 }
 
 .group-menu-wrapper {
+  margin-top: 45px;
   position: absolute;
-  margin-top: 8px;
   background-color: #333;
   border-radius: 8px;
   color: white;
-  width: 200px;
+  width: 238px;
+  z-index: 100;
+}
+
+.teacher-menu-wrapper,
+.subject-menu-wrapper,
+.cabinet-menu-wrapper {
+  position: absolute;
+  background-color: #333;
+  border-radius: 8px;
+  color: white;
+  width: 338px;
+  z-index: 100;
 }
 
 .stroke-wrapper {
@@ -551,5 +568,25 @@ main {
 .hidden {
   visibility: hidden;
   pointer-events: none;
+}
+
+.calendar-icon {
+  margin-left: 12px;
+}
+
+.download-icon {
+  margin-left: 12px;
+}
+
+.save-download-icon {
+  margin-left: 12px;
+}
+
+.save-icon {
+  margin-right: 4px;
+}
+
+.group-text {
+  margin-left: 8px;
 }
 </style>

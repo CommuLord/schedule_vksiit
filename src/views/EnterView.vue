@@ -29,15 +29,20 @@
         </div>
       </section>
     </main>
+    <FooterComponent />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
+import FooterComponent from '@/components/FooterComponent.vue';
 
 export default {
   name: 'EnterView',
+  components: {
+    FooterComponent
+  },
   data() {
     return {
       login: '',

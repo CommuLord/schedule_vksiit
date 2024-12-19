@@ -375,14 +375,12 @@ main {
 }
 
 .button-container {
-  margin-top: 20px;
   display: flex;
   justify-content: flex-start;
   width: 30%;
 }
 
 .button-container-end {
-  margin-top: 20px;
   display: flex;
   justify-content: flex-end;
   width: 30%;
@@ -453,6 +451,7 @@ main {
 }
 
 .day-change-div {
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -559,5 +558,25 @@ main {
   background-color: #333;
   border-radius: 8px;
   color: white;
+}
+
+.calendar-icon {
+  margin-left: 12px;
+}
+
+.download-icon {
+  margin-left: 12px;
+}
+
+.save-download-icon {
+  margin-left: 12px;
+}
+
+.save-icon {
+  margin-right: 4px;
+}
+
+.group-text {
+  margin-left: 8px;
 }
 </style>

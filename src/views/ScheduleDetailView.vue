@@ -6,9 +6,10 @@
           <p class="h2">Загрузка...</p>
         </div>
         <div v-else-if="schedule" class="schedule-detail-container">
-          <h1>Расписание</h1>
-          <p>Дата создания: {{ formatDate(schedule.creationDate) }}</p>
-          <p>Создатель: {{ schedule.creatorLogin }}</p>
+          <div class="title-schedule-wrapper">
+            
+          </div>
+          <p class="h0">Расписание</p>
           <div v-for="(blocks, date) in groupedScheduleBlocks" :key="date" class="day-change-div">
             <div class="day-change">
               <p class="h0">{{ date }}</p>
@@ -17,12 +18,12 @@
               <div class="main-main">
                 <div v-for="(block, blockIndex) in blocks" :key="blockIndex" class="card-container">
                   <div class="card-main">
-                    <div v-for="(lesson, lessonIndex) in block.scheduleLessons" :key="lessonIndex">
-                      <p class="h4">{{ formatTime(lesson.startLesson) }} - {{ formatTime(lesson.endLesson) }}</p>
-                      <p class="h4">{{ getTeacherSubjectName(lesson.teacherSubjectId) }}</p>
+                    <p class="card-top-text h1">{{ getGroupName(block.groupId) }}</p>
+                    <div class="card-schedule" v-for="(lesson, lessonIndex) in block.scheduleLessons" :key="lessonIndex">
+                      <p class="h4">Время: {{ formatTime(lesson.startLesson) }} - {{ formatTime(lesson.endLesson) }}</p>
+                      <p class="h4">Преподаватель/предмет: {{ getTeacherSubjectName(lesson.teacherSubjectId) }}</p>
                       <p class="h4">Кабинет: {{ getCabinetName(lesson.cabinetId) }}</p>
                     </div>
-                    <p class="card-top-text">{{ getGroupName(block.groupId) }}</p>
                   </div>
                 </div>
               </div>
@@ -84,7 +85,7 @@
         if (teacherSubject) {
           const teacher = teacherSubjectStore.teachers.find(t => t.id === teacherSubject.teacherId);
           const subject = teacherSubjectStore.subjects.find(s => s.id === teacherSubject.subjectId);
-          return teacher && subject ? `${teacher.lastName} ${teacher.firstName.charAt(0)}.${teacher.middleName.charAt(0)}. - ${subject.name}` : 'Неизвестный преподаватель';
+          return teacher && subject ? `${teacher.firstName} ${teacher.lastName.charAt(0)}.${teacher.middleName.charAt(0)}. - ${subject.name}` : 'Неизвестный преподаватель';
         }
         return 'Неизвестный преподаватель';
       };
@@ -251,21 +252,14 @@
   }
   
   .card-container {
-    border: 1px solid #d9d9d9;
     display: flex;
     flex-direction: column;
-    padding: 10px;
     border-radius: 16px;
   }
   
   .card-main {
     display: flex;
     justify-content: space-between;
-  }
-  
-  .card-top-text {
-    font-weight: 500;
-    text-decoration: underline;
   }
   
   .new-day-container {
@@ -278,7 +272,6 @@
   .day-change-div {
     display: flex;
     flex-direction: column;
-    cursor: pointer;
   }
   
   .day-change {
@@ -382,6 +375,12 @@
     background-color: #333;
     border-radius: 8px;
     color: white;
+  }
+
+  .card-schedule {
+    border: 1px solid #D9D9D9;
+    padding: 8px;
+    border-radius: 8px;
   }
   </style>
   
