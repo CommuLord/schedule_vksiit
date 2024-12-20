@@ -152,7 +152,7 @@ body, p, .h1, .h2, .h3, .h4 {
 
 input {
   padding: 8px;
-  border: 2px solid #1E1E1E;
+  border: 2px solid #2C2C2C;
   border-radius: 8px;
 }
 

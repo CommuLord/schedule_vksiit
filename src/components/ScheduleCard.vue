@@ -442,7 +442,7 @@ main {
 
 .white-button {
   background: none;
-  border: 1px solid black;
+  border: 1px solid #D9D9D9;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
@@ -453,7 +453,6 @@ main {
 .white-button:hover {
   transform: translateY(-2px);
   background: none;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .white-button:active {
@@ -474,11 +473,9 @@ main {
 }
 
 .table-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  justify-content: space-between;
+  display: grid;
   width: 100%;
+  gap: 16px;
 }
 
 .table-row {
@@ -509,12 +506,13 @@ main {
 }
 
 .title-row {
-  gap: 18px;
-  display: flex;
+  width: 97%;
+  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, 5fr);
 }
 
 .title-cell {
-  width: 343px;
   box-sizing: border-box;
   text-align: left;
 }

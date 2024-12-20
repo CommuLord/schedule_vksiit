@@ -371,7 +371,11 @@ main {
 
 .button-text {
   color: white;
-  margin: 9px;
+  margin: 8px;
+}
+
+.new-icon {
+  margin-left: 12px;
 }
 
 .button-container {
@@ -387,6 +391,7 @@ main {
 }
 
 .button-content {
+
   display: flex;
   align-items: center;
   justify-content: space-between;

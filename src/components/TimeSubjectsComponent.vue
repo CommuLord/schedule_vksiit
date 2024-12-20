@@ -208,6 +208,10 @@ body, p, .h1, .h2, .h3, .h4 {
   flex: 1;
 }
 
+input {
+  border: 2px solid #2C2C2C;
+}
+
 .select-wrapper {
   position: relative;
   width: 100%;

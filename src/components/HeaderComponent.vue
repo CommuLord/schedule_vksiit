@@ -225,7 +225,7 @@ header {
 }
 
 .logo-img-header {
-  width: 52px;
+  width: 35px;
   height: auto;
   transition: all 0.3s ease-in-out;
 }
@@ -239,7 +239,9 @@ header {
 }
 
 .header-logo-text {
+  color: #2C2C2C;
   font-weight: bold;
+  line-height: 20px;
 }
 
 .header-icons {
@@ -248,14 +250,14 @@ header {
 }
 
 .header-icon {
-  width: 28px;
+  width: 40px;
   height: auto;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
 }
 
 .header-icon-right {
-  margin-left: 12px;
+  margin-left: 24px;
 }
 
 .header-icon:hover {
@@ -269,7 +271,7 @@ header {
 .bottom-header {
   display: flex;
   justify-content: flex-start;
-  padding: 5px 18px;
+  padding: 12px 18px;
   border-bottom: 1px solid #d9d9d9;
 }
 
@@ -289,12 +291,8 @@ header {
   transition: all 0.1s ease-in-out;
 }
 
-.tab-button:hover {
-  color: #000000;
-}
-
 .tab-button.active {
-  color: #000000;
+  color: #2C2C2C;
 }
 
 .menu-wrapper {
@@ -303,10 +301,11 @@ header {
   right: 20px;
   background-color: #333;
   border-radius: 20px;
-  padding: 10px;
+  padding: 16px;
   color: white;
   font-family: Arial, sans-serif;
   z-index: 1000;
+  width: 272px;
 }
 
 .menu-wrapper img {
@@ -316,6 +315,7 @@ header {
 }
 
 .stroke-wrapper {
+  padding-left: 12px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -331,7 +331,8 @@ header {
   right: 90px;
   background-color: #333;
   border-radius: 20px;
-  padding: 10px;
+  width: 272px;
+  padding: 16px;
   color: white;
   font-family: Arial, sans-serif;
   z-index: 1000;
