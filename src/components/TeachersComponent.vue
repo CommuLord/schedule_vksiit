@@ -10,7 +10,7 @@
           class="source-add"
           @keyup.enter="addTeacher"
         />
-        <div class="table-cells">
+        <div class="table-cells" v-if="teachers.length > 0">
           <div class="cell" v-for="teacher in teachers" :key="teacher.id">
             <div class="cell-text">
               <p class="h4">{{ teacher.firstName }} {{ teacher.lastName }} {{ teacher.middleName }}</p>

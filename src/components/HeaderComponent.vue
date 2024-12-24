@@ -228,6 +228,7 @@ header {
   width: 35px;
   height: auto;
   transition: all 0.3s ease-in-out;
+  margin-right: 8px;
 }
 
 .logo-img-header:hover {

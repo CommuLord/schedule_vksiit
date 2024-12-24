@@ -4,7 +4,7 @@
       <section id="enter">
         <div class="logo-container">
           <img src="@/assets/logo.svg" alt="Logo" class="logo-img" id="logo-img">
-          <div class="h1">
+          <div class="h2 title-text">
             <span class="span-top">Менеджер</span>
             <span>расписания</span>
           </div>
@@ -24,7 +24,9 @@
                 <p class="h4 button-text">Вход</p>
               </button>
             </div>
-            <div v-if="error" class="error-message">{{ error }}</div>
+            <div v-if="error" class="error-message">
+              <p class="h4">{{ error }}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -79,7 +81,7 @@ export default {
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter-Regular.woff2') format('woff2'),
-       url('/fonts/Inter-Regular.woff') format('woff');
+    url('/fonts/Inter-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
 }
@@ -87,7 +89,7 @@ export default {
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter-Bold.woff2') format('woff2'),
-       url('/fonts/Inter-Bold.woff') format('woff');
+    url('/fonts/Inter-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
 }
@@ -97,7 +99,12 @@ body {
   margin: 0;
 }
 
-body, p, .h1, .h2, .h3, .h4 {
+body,
+p,
+.h1,
+.h2,
+.h3,
+.h4 {
   font-family: 'Inter', sans-serif;
 }
 
@@ -131,7 +138,7 @@ input {
 }
 
 .logo-img {
-  width: 65px;
+  width: 40px;
   height: auto;
   margin-right: 5px;
   cursor: pointer;
@@ -180,12 +187,14 @@ input {
   margin: 9px;
 }
 
-.login-input, .pass-input {
+.login-input,
+.pass-input {
   font-size: 16px;
   transition: all 0.1s ease-in-out;
 }
 
-.login-input:focus, .pass-input:focus {
+.login-input:focus,
+.pass-input:focus {
   outline: none;
   border-color: #2c2c2c;
   box-shadow: 0 0 0 0.25rem rgba(194, 194, 194, 0.25);
@@ -217,18 +226,58 @@ input {
   box-shadow: none;
 }
 
-.h1 { font-size: 32px; margin: 2px 0 2px 0; }
-.h2 { font-size: 24px; margin: 2px 0 2px 0;}
-.h3 { font-size: 18px; margin: 2px 0 2px 0; }
-.h4 { font-size: 16px; margin: 10px 0 10px 0; }
+.h1 {
+  font-size: 32px;
+  margin: 2px 0 2px 0;
+}
 
-.a1 { font-weight: bold; color: #0066cc; text-decoration: none; }
-.a2 { font-weight: bold; color: #ff6600; text-decoration: underline; }
-.a3 { font-style: italic; color: #0066cc; text-decoration: none; }
+.h2 {
+  font-size: 24px;
+  margin: 2px 0 2px 0;
+}
 
-.p1 { line-height: 1.5; margin-bottom: 18px; }
-.p2 { line-height: 1.3; margin-bottom: 12px; }
-.p3 { line-height: 1.2; margin-bottom: 10px; }
+.h3 {
+  font-size: 18px;
+  margin: 2px 0 2px 0;
+}
+
+.h4 {
+  font-size: 16px;
+  margin: 10px 0 10px 0;
+}
+
+.a1 {
+  font-weight: bold;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.a2 {
+  font-weight: bold;
+  color: #ff6600;
+  text-decoration: underline;
+}
+
+.a3 {
+  font-style: italic;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.p1 {
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.p2 {
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+
+.p3 {
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
 
 .span-top {
   display: block;
@@ -236,7 +285,12 @@ input {
 }
 
 .error-message {
+  text-align: center;
   color: red;
-  margin-top: 10px;
+  margin-top: 16px;
+}
+
+.title-text {
+  font-weight: 600;
 }
 </style>

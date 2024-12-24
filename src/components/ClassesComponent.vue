@@ -10,7 +10,7 @@
           class="source-add"
           @keyup.enter="addGroup"
         />
-        <div class="table-cells">
+        <div class="table-cells" v-if="groups.length > 0">
           <div class="cell" v-for="group in groups" :key="group.id">
             <div class="cell-text">
               <p class="h4">{{ group.name }}</p>

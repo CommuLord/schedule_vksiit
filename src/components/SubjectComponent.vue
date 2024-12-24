@@ -10,7 +10,7 @@
           class="source-add"
           @keyup.enter="addSubject"
         />
-        <div class="table-cells">
+        <div class="table-cells" v-if="subjects.length > 0">
           <div class="cell" v-for="subject in subjects" :key="subject.id">
             <div class="cell-text">
               <p class="h4">{{ subject.name }}</p>

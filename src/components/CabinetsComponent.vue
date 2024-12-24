@@ -10,7 +10,7 @@
           class="source-add"
           @keyup.enter="addCabinet"
         />
-        <div class="table-cells">
+        <div class="table-cells" v-if="cabinets.length > 0">
           <div class="cell" v-for="cabinet in cabinets" :key="cabinet.id">
             <div class="cell-text">
               <p class="h4">{{ cabinet.name }}</p>

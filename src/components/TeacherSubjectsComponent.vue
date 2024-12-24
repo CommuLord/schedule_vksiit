@@ -25,7 +25,7 @@
             <p class="h4 button-text">Добавить</p>
           </button>
         </div>
-        <div class="table-cells">
+        <div class="table-cells" v-if="teacherSubjects.length > 0">
           <div v-for="ts in teacherSubjects" :key="ts.id" class="cell">
             <div class="cell-text">
               <p class="h4">

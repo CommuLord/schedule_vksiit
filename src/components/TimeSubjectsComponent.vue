@@ -27,7 +27,7 @@
             <p class="h4 button-text">Добавить</p>
           </button>
         </div>
-        <div class="table-cells">
+        <div class="table-cells" v-if="subjectTimes.length > 0">
           <div v-for="st in subjectTimes" :key="st.studyYear" class="cell">
             <div class="cell-text">
               <p class="h4">{{ getTeacherSubjectName(st.teacherSubjectId) }} - {{ st.subjectTime }} часов в {{ st.studyYear }} году</p>
