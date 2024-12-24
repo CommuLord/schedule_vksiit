@@ -26,7 +26,12 @@
           </button>
         </div>
         <div class="table-cells" v-if="teacherSubjects.length > 0">
-          <div v-for="ts in teacherSubjects" :key="ts.id" class="cell">
+          <div
+            v-for="(ts, index) in teacherSubjects"
+            :key="ts.id"
+            class="cell"
+            :class="{ 'no-border': index === teacherSubjects.length - 1 }"
+          >
             <div class="cell-text">
               <p class="h4">
                 {{ getTeacherName(ts.teacherId) }} - {{ getSubjectName(ts.subjectId) }}
@@ -198,7 +203,7 @@ select {
 .select-container {
   display: flex;
   justify-content: flex-start;
-  gap: 8px; 
+  gap: 8px;
 }
 
 .select-wrapper {
@@ -235,6 +240,10 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.no-border {
+  border-bottom: none;
 }
 
 .cell p {
@@ -275,7 +284,7 @@ select {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
-  padding: 8px 0; 
+  padding: 8px 0;
 }
 
 .accept-button:hover {

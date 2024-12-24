@@ -11,7 +11,12 @@
           @keyup.enter="addCabinet"
         />
         <div class="table-cells" v-if="cabinets.length > 0">
-          <div class="cell" v-for="cabinet in cabinets" :key="cabinet.id">
+          <div
+            class="cell"
+            v-for="(cabinet, index) in cabinets"
+            :key="cabinet.id"
+            :class="{ 'no-border': index === cabinets.length - 1 }"
+          >
             <div class="cell-text">
               <p class="h4">{{ cabinet.name }}</p>
             </div>
@@ -168,6 +173,10 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.no-border {
+  border-bottom: none;
 }
 
 .cell p {

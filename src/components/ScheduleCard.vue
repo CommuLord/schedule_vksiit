@@ -506,8 +506,8 @@ main {
 }
 
 .title-row {
-  width: 97%;
-  gap: 8px;
+  width: 96%;
+  gap: 24px;
   display: grid;
   grid-template-columns: repeat(5, 5fr);
 }

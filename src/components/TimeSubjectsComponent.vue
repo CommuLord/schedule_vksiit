@@ -28,7 +28,12 @@
           </button>
         </div>
         <div class="table-cells" v-if="subjectTimes.length > 0">
-          <div v-for="st in subjectTimes" :key="st.studyYear" class="cell">
+          <div
+            v-for="(st, index) in subjectTimes"
+            :key="st.studyYear"
+            class="cell"
+            :class="{ 'no-border': index === subjectTimes.length - 1 }"
+          >
             <div class="cell-text">
               <p class="h4">{{ getTeacherSubjectName(st.teacherSubjectId) }} - {{ st.subjectTime }} часов в {{ st.studyYear }} году</p>
             </div>
@@ -258,6 +263,10 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.no-border {
+  border-bottom: none;
 }
 
 .cell p {

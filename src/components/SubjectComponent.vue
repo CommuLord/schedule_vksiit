@@ -11,7 +11,12 @@
           @keyup.enter="addSubject"
         />
         <div class="table-cells" v-if="subjects.length > 0">
-          <div class="cell" v-for="subject in subjects" :key="subject.id">
+          <div
+            class="cell"
+            v-for="(subject, index) in subjects"
+            :key="subject.id"
+            :class="{ 'no-border': index === subjects.length - 1 }"
+          >
             <div class="cell-text">
               <p class="h4">{{ subject.name }}</p>
             </div>
@@ -168,6 +173,10 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.no-border {
+  border-bottom: none;
 }
 
 .cell p {

@@ -11,7 +11,12 @@
           @keyup.enter="addTeacher"
         />
         <div class="table-cells" v-if="teachers.length > 0">
-          <div class="cell" v-for="teacher in teachers" :key="teacher.id">
+          <div
+            class="cell"
+            v-for="(teacher, index) in teachers"
+            :key="teacher.id"
+            :class="{ 'no-border': index === teachers.length - 1 }"
+          >
             <div class="cell-text">
               <p class="h4">{{ teacher.firstName }} {{ teacher.lastName }} {{ teacher.middleName }}</p>
             </div>
@@ -184,6 +189,10 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.no-border {
+  border-bottom: none;
 }
 
 .cell p {

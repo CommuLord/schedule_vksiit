@@ -11,7 +11,12 @@
           @keyup.enter="addGroup"
         />
         <div class="table-cells" v-if="groups.length > 0">
-          <div class="cell" v-for="group in groups" :key="group.id">
+          <div
+            class="cell"
+            v-for="(group, index) in groups"
+            :key="group.id"
+            :class="{ 'no-border': index === groups.length - 1 }"
+          >
             <div class="cell-text">
               <p class="h4">{{ group.name }}</p>
             </div>
@@ -168,6 +173,10 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.no-border {
+  border-bottom: none;
 }
 
 .cell p {
