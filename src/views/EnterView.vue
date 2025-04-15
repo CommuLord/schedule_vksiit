@@ -3,20 +3,20 @@
     <main>
       <section id="enter">
         <div class="logo-container">
-          <img src="@/assets/logo.svg" alt="Logo" class="logo-img" id="logo-img">
+          <img :src="currentLogo" alt="Logo" class="logo-img" id="logo-img">
           <div class="h2 title-text">
             <span class="span-top">Менеджер</span>
-            <span>расписания</span>
+            <span class="span-down">расписания</span>
           </div>
         </div>
         <div class="enter-inner-container">
           <div class="login-menu">
             <div class="login-container">
-              <p class="h4 login-text">Логин</p>
+              <p class="h4 enter-text">Логин</p>
               <input type="text" v-model="login" placeholder="Введите логин" class="login-input">
             </div>
             <div class="pass-container">
-              <p class="h4 pass-text">Пароль</p>
+              <p class="h4 enter-text">Пароль</p>
               <input type="password" v-model="password" placeholder="Введите пароль" class="pass-input">
             </div>
             <div class="button-container">
@@ -39,12 +39,26 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import FooterComponent from '@/components/FooterComponent.vue';
+import { useThemeStore } from '@/stores/theme'
+import logoLight from '@/assets/logo.svg';
+import logoDark from '@/assets/logo-big-dark.svg'
 
 export default {
   name: 'EnterView',
   components: {
     FooterComponent
   },
+
+  setup() {
+    const themeStore = useThemeStore()
+    return { themeStore }
+  },
+  computed: {
+    currentLogo() {
+      return this.themeStore.isDark ? logoDark : logoLight
+    }
+  },
+
   data() {
     return {
       login: '',
@@ -115,12 +129,11 @@ main {
   align-items: center;
   flex-direction: column;
   min-height: 80vh;
-  color: #1E1E1E;
 }
 
 input {
   padding: 10px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
 }
 
@@ -160,7 +173,7 @@ input {
 .enter-inner-container {
   padding: 15px;
   border-radius: 8px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--border-color);
   min-width: 320px;
   display: flex;
   justify-content: center;
@@ -189,8 +202,11 @@ input {
 
 .login-input,
 .pass-input {
+  background-color: var(--bg-color); 
   font-size: 16px;
   transition: all 0.1s ease-in-out;
+  border-color: var(--border-color);
+  color: var(--text-color);
 }
 
 .login-input:focus,
@@ -280,8 +296,13 @@ input {
 }
 
 .span-top {
+  color: var(--text-color);
   display: block;
   margin-bottom: -10px;
+}
+
+.span-down {
+  color: var(--text-color);
 }
 
 .error-message {
@@ -292,5 +313,9 @@ input {
 
 .title-text {
   font-weight: 600;
+}
+
+.enter-text {
+  color: var(--text-color);
 }
 </style>

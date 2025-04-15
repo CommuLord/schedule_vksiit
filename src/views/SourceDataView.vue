@@ -5,22 +5,22 @@
     <main>
       <div class="buttons-source">
         <button @click="selectButton(0)" :class="{ 'subject-but': true, 'active': activeButtonIndex === 0 }">
-          <p class="h4">Предметы</p>
+          <p class="h4 source-tab-text">Предметы</p>
         </button>
         <button @click="selectButton(1)" :class="{ 'teacher-but': true, 'active': activeButtonIndex === 1 }">
-          <p class="h4">Учителя</p>
+          <p class="h4 source-tab-text">Учителя</p>
         </button>
         <button @click="selectButton(2)" :class="{ 'teacher-sub-but': true, 'active': activeButtonIndex === 2 }">
-          <p class="h4">Предметы на учителей</p>
+          <p class="h4 source-tab-text">Предметы на учителей</p>
         </button>
         <button @click="selectButton(3)" :class="{ 'time-sub-but': true, 'active': activeButtonIndex === 3 }">
-          <p class="h4">Время на предмет</p>
+          <p class="h4 source-tab-text">Время на предмет</p>
         </button>
         <button @click="selectButton(4)" :class="{ 'class-but': true, 'active': activeButtonIndex === 4 }">
-          <p class="h4">Классы/Группы</p>
+          <p class="h4 source-tab-text">Классы/Группы</p>
         </button>
         <button @click="selectButton(5)" :class="{ 'cabinet-but': true, 'active': activeButtonIndex === 5 }">
-          <p class="h4">Кабинеты</p>
+          <p class="h4 source-tab-text">Кабинеты</p>
         </button>
       </div>
       <div class="margin-component">
@@ -146,7 +146,7 @@ main {
 
 .buttons-source button {
   height: 40px;
-  border: 2px solid #d9d9d9;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   margin-right: 8px;
   padding: 12px;
@@ -157,7 +157,6 @@ main {
   align-items: center;
   text-align: center;
   transition: all 0.1s ease-in-out;
-  color: #757575; /* Минорный цвет */
 }
 
 .buttons-source button:hover {
@@ -187,5 +186,9 @@ main {
 .margin-component {
   margin-top: 16px;
   width: 97%;
+}
+
+.source-tab-text {
+  color: var(--text-color);
 }
 </style>

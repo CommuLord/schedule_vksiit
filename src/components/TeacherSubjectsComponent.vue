@@ -10,14 +10,14 @@
                 {{ teacher.firstName }} {{ teacher.lastName }} {{ teacher.middleName ? teacher.middleName : '' }}
               </option>
             </select>
-            <img :class="['save-icon', { 'rotate': isTeacherMenuOpen }]" src="/src/assets/chedown.svg" alt="ched">
+            <img :class="['save-icon', { 'rotate': isTeacherMenuOpen }]" :src="currentChevron" alt="ched">
           </div>
           <div class="select-wrapper">
             <select v-model="selectedSubject" class="source-add" @focus="isSubjectMenuOpen = true" @blur="isSubjectMenuOpen = false" @change="isSubjectMenuOpen = false">
               <option value="" disabled>Выберите предмет</option>
               <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.name }}</option>
             </select>
-            <img :class="['save-icon', { 'rotate': isSubjectMenuOpen }]" src="/src/assets/chedown.svg" alt="ched">
+            <img :class="['save-icon', { 'rotate': isSubjectMenuOpen }]" :src="currentChevron" alt="ched">
           </div>
         </div>
         <div class="button-container">
@@ -39,8 +39,8 @@
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button" @click="editTeacherSubject(ts)">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button" @click="deleteTeacherSubject(ts.id)">
+                <img :src="currentEdit" alt="edit" class="button" @click="editTeacherSubject(ts)">
+                <img :src="currentTrash" alt="delete" class="button" @click="deleteTeacherSubject(ts.id)">
               </div>
             </div>
           </div>
@@ -52,9 +52,25 @@
 
 <script>
 import { useTeacherSubjectStore } from '@/stores/teacherSubject';
+import { useThemeStore } from '@/stores/theme'
+import chedownLight from '@/assets/chedown-light.svg'
+import chedownDark from '@/assets/chedown-dark.svg'
+import TrashLight from '@/assets/Trash.svg'
+import TrashDark from '@/assets/Trash-dark.svg'
+import EditLight from '@/assets/Edit.svg'
+import EditDark from '@/assets/Edit-dark.svg'
 
 export default {
   name: 'TeacherSubjectsComponent',
+  setup() {
+    const themeStore = useThemeStore()
+    const teacherSubjectStore = useTeacherSubjectStore()
+    
+    return { 
+      themeStore,
+      teacherSubjectStore
+    }
+  },
   data() {
     return {
       selectedTeacher: '',
@@ -64,6 +80,15 @@ export default {
     };
   },
   computed: {
+    currentChevron() {
+      return this.themeStore.isDark ? chedownDark : chedownLight
+    },
+    currentTrash() {
+      return this.themeStore.isDark ? TrashDark : TrashLight
+    },
+    currentEdit() {
+      return this.themeStore.isDark ? EditDark : EditLight
+    },
     teacherSubjects() {
       return this.teacherSubjectStore.teacherSubjects;
     },
@@ -113,13 +138,7 @@ export default {
     deleteTeacherSubject(id) {
       this.teacherSubjectStore.deleteTeacherSubject(id);
     },
-  },
-  setup() {
-    const teacherSubjectStore = useTeacherSubjectStore();
-    return {
-      teacherSubjectStore,
-    };
-  },
+  }
 };
 </script>
 
@@ -177,15 +196,16 @@ body, p, .h1, .h2, .h3, .h4 {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background: none;
-  padding-right: 30px; /* Добавим отступ для стрелочки */
+  background: var(--bg-color);
+  color: var(--text-color);
+  padding-right: 30px;
 }
 
 select {
   padding: 8px;
-  border: 2px solid #1E1E1E;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
-  margin-right: 10px; /* Уменьшим отступ между полями */
+  margin-right: 10px;
 }
 
 .source-add:focus {
@@ -226,7 +246,7 @@ select {
 
 .table-cells {
   margin-top: 16px;
-  border: 2px solid #D9D9D9;
+  border: 2px solid var(--border-color);
   border-radius: 16px;
   padding-left: 16px;
   padding-right: 16px;
@@ -301,5 +321,9 @@ select {
 .button-text {
   color: white;
   margin: 0;
+}
+
+.cell-text {
+  color: var(--text-color);
 }
 </style>

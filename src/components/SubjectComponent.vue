@@ -23,13 +23,13 @@
             <div class="buttons">
               <div class="buttons-wrapper">
                 <img
-                  src="/src/assets/Edit.svg"
+                  :src="currentEdit"
                   alt="edit"
                   class="button"
                   @click="startEdit(subject)"
                 />
                 <img
-                  src="/src/assets/Trash.svg"
+                  :src="currentTrash"
                   alt="delete"
                   class="button"
                   @click="deleteSubject(subject.id)"
@@ -45,6 +45,11 @@
 
 <script>
 import { useSubjectsStore } from '@/stores/subjects';
+import { useThemeStore } from '@/stores/theme'
+import TrashLight from '@/assets/Trash.svg'
+import TrashDark from '@/assets/Trash-dark.svg'
+import EditLight from '@/assets/Edit.svg'
+import EditDark from '@/assets/Edit-dark.svg'
 
 export default {
   name: 'SubjectComponent',
@@ -54,10 +59,20 @@ export default {
       editingSubject: null,
     };
   },
+  setup() {
+    const themeStore = useThemeStore()
+    return { themeStore }
+  },
   computed: {
+    currentTrash() {
+      return this.themeStore.isDark ? TrashDark : TrashLight
+    },
+    currentEdit() {
+      return this.themeStore.isDark ? EditDark : EditLight
+    },
     subjects() {
       return useSubjectsStore().subjects;
-    },
+    }
   },
   methods: {
     addSubject() {
@@ -135,8 +150,11 @@ body, p, .h1, .h2, .h3, .h4 {
 }
 
 .source-add {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
   font-size: 16px;
   transition: all 0.1s ease-in-out;
+  color: var(--text-color);
 }
 
 input {
@@ -159,7 +177,7 @@ input {
 
 .table-cells {
   margin-top: 16px;
-  border: 2px solid #D9D9D9;
+  border: 2px solid var(--border-color);
   border-radius: 16px;
   padding-left: 16px;
   padding-right: 16px;
@@ -202,5 +220,9 @@ input {
 .button:active {
   transform: translateY(2px);
   box-shadow: none;
+}
+
+.cell-text {
+  color: var(--text-color);
 }
 </style>

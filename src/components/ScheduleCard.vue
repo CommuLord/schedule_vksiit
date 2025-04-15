@@ -4,8 +4,8 @@
       <div class="card-left-top">
         <button class="white-button" @click.stop="toggleGroupMenu">
           <div class="button-content">
-            <p class="h4">{{ selectedGroup ? selectedGroup.name : 'Класс/Группа' }}</p>
-            <img :class="['save-icon', { 'rotate': isGroupMenuOpen }]" src="/src/assets/chedown.svg" alt="ched">
+            <p class="h4 group-card-text">{{ selectedGroup ? selectedGroup.name : 'Класс/Группа' }}</p>
+            <img :class="['save-icon', { 'rotate': isGroupMenuOpen }]" :src="currentChevron" alt="chevron">
           </div>
         </button>
         <transition name="fade">
@@ -37,9 +37,8 @@
           <div class="table-cell-dropdown">
             <button class="white-button" @click.stop="toggleTeacherMenu(index)">
               <div class="button-content">
-                <p class="h4">{{ item.teacher ? formatTeacherName(item.teacher) : 'Преподаватель' }}</p>
-                <img :class="['save-icon', { 'rotate': isTeacherMenuOpen[index] }]" src="/src/assets/chedown.svg"
-                  alt="ched">
+                <p class="h4 dropdown-cell-text">{{ item.teacher ? formatTeacherName(item.teacher) : 'Преподаватель' }}</p>
+                <img :class="['save-icon', { 'rotate': isTeacherMenuOpen[index] }]" :src="currentChevron" alt="chevron">
               </div>
             </button>
             <transition name="fade">
@@ -54,9 +53,8 @@
           <div class="table-cell-dropdown">
             <button class="white-button" @click.stop="toggleSubjectMenu(index)">
               <div class="button-content">
-                <p class="h4">{{ item.subject ? item.subject.name : 'Предмет' }}</p>
-                <img :class="['save-icon', { 'rotate': isSubjectMenuOpen[index] }]" src="/src/assets/chedown.svg"
-                  alt="ched">
+                <p class="h4 dropdown-cell-text">{{ item.subject ? item.subject.name : 'Предмет' }}</p>
+                <img :class="['save-icon', { 'rotate': isSubjectMenuOpen[index] }]" :src="currentChevron" alt="chevron">
               </div>
             </button>
             <transition name="fade">
@@ -71,9 +69,8 @@
           <div class="table-cell-dropdown">
             <button class="white-button" @click.stop="toggleCabinetMenu(index)">
               <div class="button-content">
-                <p class="h4">{{ item.room || 'Кабинет' }}</p>
-                <img :class="['save-icon', { 'rotate': isCabinetMenuOpen[index] }]" src="/src/assets/chedown.svg"
-                  alt="ched">
+                <p class="h4 dropdown-cell-text">{{ item.room || 'Кабинет' }}</p>
+                <img :class="['save-icon', { 'rotate': isCabinetMenuOpen[index] }]" :src="currentChevron" alt="chevron">
               </div>
             </button>
             <transition name="fade">
@@ -89,7 +86,7 @@
             :class="{ 'hidden': index === 0 || (index === schedule.length - 1 && isLastRowEmpty(index)) }"
             @click="deleteRow(index)"
             :disabled="index === 0 || (index === schedule.length - 1 && isLastRowEmpty(index))">
-            <img class="img-delete" src="/src/assets/Minus.svg" alt="delete">
+            <img class="img-delete" :src="currentMinusIcon" alt="delete">
           </button>
         </div>
       </div>
@@ -104,6 +101,11 @@ import { useSubjectsStore } from '@/stores/subjects';
 import { useTeachersStore } from '@/stores/teachers';
 import { useCabinetsStore } from '@/stores/cabinets';
 import { useTeacherSubjectStore } from '@/stores/teacherSubject';
+import { useThemeStore } from '@/stores/theme'
+import chedownLight from '@/assets/chedown-light.svg'
+import chedownDark from '@/assets/chedown-dark.svg'
+import minusLight from '@/assets/minus-light.svg'
+import minusDark from '@/assets/minus-dark.svg'
 
 export default {
   props: {
@@ -113,6 +115,7 @@ export default {
     }
   },
   setup(props, { emit }) {
+    const themeStore = useThemeStore()
     const groupsStore = useGroupsStore();
     const subjectsStore = useSubjectsStore();
     const teachersStore = useTeachersStore();
@@ -130,6 +133,14 @@ export default {
     const isSubjectMenuOpen = ref([]);
     const isTeacherMenuOpen = ref([]);
     const isCabinetMenuOpen = ref([]);
+
+    const currentChevron = computed(() => 
+      themeStore.isDark ? chedownDark : chedownLight
+    )
+    
+    const currentMinusIcon = computed(() => 
+      themeStore.isDark ? minusDark : minusLight
+    )
 
     const schedule = ref([
       { start: '', end: '', subject: null, teacher: null, room: '', teacherSubjectId: null, cabinetId: null }
@@ -251,6 +262,8 @@ export default {
     }, { deep: true });
 
     return {
+      currentChevron,
+      currentMinusIcon,
       groups,
       subjects,
       teachers,
@@ -397,7 +410,7 @@ main {
 }
 
 .card-container {
-  border: 2px solid #d9d9d9;
+  border: 2px solid var(--border-color);
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -440,9 +453,13 @@ main {
   justify-content: space-between;
 }
 
+.group-card-text {
+  color: var(--text-color);
+}
+
 .white-button {
   background: none;
-  border: 1px solid #D9D9D9;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
@@ -485,8 +502,10 @@ main {
 
 .table-cell,
 .table-cell-dropdown {
+  background-color: var(--bg-color);
+  color: var(--text-color);
   flex: 1;
-  border: 1px solid #D9D9D9;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   transition: all 0.1s ease-in-out;
   width: calc(20% - 18px);
@@ -587,4 +606,9 @@ main {
 .group-text {
   margin-left: 8px;
 }
+
+.dropdown-cell-text {
+  color: var(--text-color);
+}
+
 </style>

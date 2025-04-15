@@ -23,13 +23,13 @@
             <div class="buttons">
               <div class="buttons-wrapper">
                 <img
-                  src="/src/assets/Edit.svg"
+                  :src="currentEdit"
                   alt="edit"
                   class="button"
                   @click="startEdit(teacher)"
                 />
                 <img
-                  src="/src/assets/Trash.svg"
+                  :src="currentTrash"
                   alt="delete"
                   class="button"
                   @click="deleteTeacher(teacher.id)"
@@ -45,6 +45,11 @@
 
 <script>
 import { useTeachersStore } from '@/stores/teachers';
+import { useThemeStore } from '@/stores/theme'
+import TrashLight from '@/assets/Trash.svg'
+import TrashDark from '@/assets/Trash-dark.svg'
+import EditLight from '@/assets/Edit.svg'
+import EditDark from '@/assets/Edit-dark.svg'
 
 export default {
   name: 'TeachersComponent',
@@ -54,10 +59,20 @@ export default {
       editingTeacher: null,
     };
   },
+  setup() {
+    const themeStore = useThemeStore()
+    return { themeStore }
+  },
   computed: {
+    currentTrash() {
+      return this.themeStore.isDark ? TrashDark : TrashLight
+    },
+    currentEdit() {
+      return this.themeStore.isDark ? EditDark : EditLight
+    },
     teachers() {
       return useTeachersStore().teachers;
-    },
+    }
   },
   methods: {
     addTeacher() {
@@ -151,13 +166,15 @@ body, p, .h1, .h2, .h3, .h4 {
 }
 
 .source-add {
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-size: 16px;
   transition: all 0.1s ease-in-out;
 }
 
 input {
   padding: 8px;
-  border: 2px solid #2C2C2C;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
 }
 
@@ -175,7 +192,7 @@ input {
 
 .table-cells {
   margin-top: 16px;
-  border: 2px solid #D9D9D9;
+  border: 2px solid var(--border-color);
   border-radius: 16px;
   padding-left: 16px;
   padding-right: 16px;
@@ -218,5 +235,8 @@ input {
 .button:active {
   transform: translateY(2px);
   box-shadow: none;
+}
+.cell-text {
+  color: var(--text-color);
 }
 </style>

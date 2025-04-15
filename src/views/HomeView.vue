@@ -430,14 +430,6 @@ main {
   gap: 16px;
 }
 
-.card-container {
-  border: 1px solid #d9d9d9;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  border-radius: 16px;
-}
-
 .card-main {
   display: flex;
   justify-content: space-between;

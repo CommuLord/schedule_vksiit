@@ -68,13 +68,14 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--bg-color);
     padding: 10px 0;
     text-align: center;
   }
   
   .footer-text {
     font-weight: normal;
+    color: var(--text-color);
   }
   </style>
   

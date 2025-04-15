@@ -27,11 +27,6 @@
         </div>
       </div>
     </div>
-    <!--<button class="main-button show-more-button">
-      <div class="button-content">
-        <p class="h4 button-text">Показать ещё</p>
-      </div>
-    </button>-->
   </div>
 </template>
 
@@ -156,8 +151,8 @@ main {
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  background-color: #ffffff;
-  border: 1px solid #d9d9d9;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   text-align: center;
   font-size: 16px;
@@ -168,13 +163,11 @@ main {
 }
 
 .archive-item:hover {
-  background-color: #f0f0f0;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .archive-item:active {
-  background-color: #e0e0e0;
   transform: translateY(2px);
   box-shadow: none;
 }
@@ -182,12 +175,12 @@ main {
 .archive-item-id {
   font-weight: bold;
   margin-bottom: 5px;
-  color: black;
+  color: var(--text-color);
 }
 
 .archive-item-date {
   font-size: 14px;
-  color: #333;
+  color: var(--text-color);
 }
 
 @media (min-width: 1920px) {

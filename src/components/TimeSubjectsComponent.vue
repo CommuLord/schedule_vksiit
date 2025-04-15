@@ -12,7 +12,7 @@
                   {{ getTeacherName(ts.teacherId) }} - {{ getSubjectName(ts.subjectId) }}
                 </option>
               </select>
-              <img :class="['save-icon', { 'rotate': isTeacherSubjectMenuOpen }]" src="/src/assets/chedown.svg" alt="ched">
+              <img :class="['save-icon', { 'rotate': isTeacherSubjectMenuOpen }]" :src="currentChevron" alt="ched">
             </div>
           </div>
           <div class="input-wrapper second-input">
@@ -39,8 +39,8 @@
             </div>
             <div class="buttons">
               <div class="buttons-wrapper">
-                <img src="/src/assets/Edit.svg" alt="edit" class="button" @click="editSubjectTime(st)">
-                <img src="/src/assets/Trash.svg" alt="delete" class="button" @click="deleteSubjectTime(st.studyYear)">
+                <img :src="currentEdit" alt="edit" class="button" @click="editSubjectTime(st)">
+                <img :src="currentTrash" alt="delete" class="button" @click="deleteSubjectTime(st.studyYear)">
               </div>
             </div>
           </div>
@@ -53,9 +53,27 @@
 <script>
 import { useSubjectTimeStore } from '@/stores/subjectTime';
 import { useTeacherSubjectStore } from '@/stores/teacherSubject';
+import { useThemeStore } from '@/stores/theme';
+import chedownLight from '@/assets/chedown-light.svg';
+import chedownDark from '@/assets/chedown-dark.svg';
+import TrashLight from '@/assets/Trash.svg';
+import TrashDark from '@/assets/Trash-dark.svg';
+import EditLight from '@/assets/Edit.svg';
+import EditDark from '@/assets/Edit-dark.svg';
 
 export default {
   name: 'TimeSubjectsComponent',
+  setup() {
+    const subjectTimeStore = useSubjectTimeStore();
+    const teacherSubjectStore = useTeacherSubjectStore();
+    const themeStore = useThemeStore();
+    
+    return {
+      subjectTimeStore,
+      teacherSubjectStore,
+      themeStore
+    };
+  },
   data() {
     return {
       selectedTeacherSubject: '',
@@ -65,6 +83,15 @@ export default {
     };
   },
   computed: {
+    currentChevron() {
+      return this.themeStore.isDark ? chedownDark : chedownLight;
+    },
+    currentTrash() {
+      return this.themeStore.isDark ? TrashDark : TrashLight;
+    },
+    currentEdit() {
+      return this.themeStore.isDark ? EditDark : EditLight;
+    },
     subjectTimes() {
       return this.subjectTimeStore.subjectTimes;
     },
@@ -120,15 +147,7 @@ export default {
     deleteSubjectTime(studyYear) {
       this.subjectTimeStore.deleteSubjectTime(studyYear);
     },
-  },
-  setup() {
-    const subjectTimeStore = useSubjectTimeStore();
-    const teacherSubjectStore = useTeacherSubjectStore();
-    return {
-      subjectTimeStore,
-      teacherSubjectStore,
-    };
-  },
+  }
 };
 </script>
 
@@ -179,6 +198,10 @@ body, p, .h1, .h2, .h3, .h4 {
   margin: 8px 0 8px 0;
 }
 
+.cell-text {
+  color: var(--text-color);
+}
+
 .source-add {
   font-size: 16px;
   transition: all 0.1s ease-in-out;
@@ -190,8 +213,10 @@ body, p, .h1, .h2, .h3, .h4 {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background: none;
-  padding-right: 30px; /* Добавим отступ для стрелочки */
+  background: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--text-color);
+  padding-right: 30px;
 }
 
 .input-an-wrapper {
@@ -249,7 +274,7 @@ input {
 
 .table-cells {
   margin-top: 16px;
-  border: 2px solid #D9D9D9;
+  border: 2px solid var(--border-color);
   border-radius: 16px;
   padding-left: 16px;
   padding-right: 16px;

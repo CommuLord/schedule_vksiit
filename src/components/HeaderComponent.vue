@@ -2,12 +2,12 @@
   <header>
     <div class="top-header">
       <div class="header-logo-container">
-        <img src="@/assets/logo.svg" alt="Logo" class="logo-img-header">
+        <img :src="currentLogo" alt="Logo" class="logo-img-header">
         <p class="header-logo-text h2">Менеджер<br>расписания</p>
       </div>
       <div class="header-icons">
-        <img src="@/assets/User.svg" alt="User" class="header-icon" @click="toggleUser">
-        <img src="@/assets/sun.svg" alt="Settings" class="header-icon header-icon-right" @click="toggleMenu">
+        <img :src="currentUserIcon" alt="User" class="header-icon" @click="toggleUser">
+        <img :src="currentSunIcon" alt="Theme" class="header-icon header-icon-right" @click="toggleMenu">
       </div>
     </div>
     <div class="bottom-header">
@@ -22,17 +22,17 @@
     </div>
     <transition name="fade">
       <div v-if="isMenuVisible" class="menu-wrapper" @click.stop>
-        <div class="stroke-wrapper" @click="showThemeChangeNotification">
+        <div class="stroke-wrapper" @click="handleThemeChange('light')">
           <img class="img-menu" src="@/assets/wsun.svg" alt="sun">
-          <p class="h4">Всегда светлый</p>
+          <p class="h4 theme-menu-text">Всегда светлый</p>
         </div>
-        <div class="stroke-wrapper" @click="showThemeChangeNotification">
+        <div class="stroke-wrapper" @click="handleThemeChange('dark')">
           <img class="img-menu" src="@/assets/moon.svg" alt="sun">
-          <p class="h4">Всегда темный</p>
+          <p class="h4 theme-menu-text">Всегда темный</p>
         </div>
-        <div class="stroke-wrapper" @click="showThemeChangeNotification">
+        <div class="stroke-wrapper" @click="handleThemeChange('system')">
           <img class="img-menu" src="@/assets/monitor.svg" alt="sun">
-          <p class="h4">Как в системе</p>
+          <p class="h4 theme-menu-text">Как в системе</p>
         </div>
       </div>
     </transition>
@@ -41,7 +41,7 @@
       <div v-if="isUserVisible" class="user-wrapper" @click.stop>
         <div class="stroke-wrapper" @click="logout">
           <img class="img-menu" src="@/assets/logout.svg" alt="lo">
-          <p class="h4">Выйти</p>
+          <p class="h4 theme-menu-text">Выйти</p>
         </div>
       </div>
     </transition>
@@ -56,10 +56,32 @@
 </template>
 
 <script>
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/auth'
+import { useThemeStore } from '@/stores/theme'
+import logoLight from '@/assets/logo-white-theme.svg';
+import logoDark from '@/assets/logo-dark.svg'
+import userLight from '@/assets/User.svg'
+import userDark from '@/assets/User-dark.svg'
+import sunLight from '@/assets/sun.svg'
+import sunDark from '@/assets/sun-dark.svg'
 
 export default {
   name: 'HeaderComponent',
+  setup() {
+    const themeStore = useThemeStore()
+    return { themeStore }
+  },
+  computed: {
+    currentLogo() {
+      return this.themeStore.isDark ? logoDark : logoLight
+    },
+    currentUserIcon() {
+      return this.themeStore.isDark ? userDark : userLight
+    },
+    currentSunIcon() {
+      return this.themeStore.isDark ? sunDark : sunLight
+    }
+  },
   data() {
     return {
       activeTabIndex: 0,
@@ -69,6 +91,10 @@ export default {
     }
   },
   methods: {
+    handleThemeChange(theme) {
+      const themeStore = useThemeStore()
+      themeStore.setTheme(theme)
+    },
     selectTab(index) {
       this.activeTabIndex = index;
       if (index === 0) {
@@ -209,7 +235,7 @@ header {
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: #ffffff;
+  background-color: var(--bg-color);
 }
 
 .top-header {
@@ -240,7 +266,7 @@ header {
 }
 
 .header-logo-text {
-  color: #2C2C2C;
+  color: var(--text-color);
   font-weight: bold;
   line-height: 20px;
 }
@@ -273,7 +299,7 @@ header {
   display: flex;
   justify-content: flex-start;
   padding: 12px 18px;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tab-container {
@@ -288,22 +314,22 @@ header {
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  color: #757575;
+  color: var(--secondary-text);
   transition: all 0.1s ease-in-out;
 }
 
 .tab-button.active {
-  color: #2C2C2C;
+  color: var(--text-color);
 }
 
 .menu-wrapper {
   position: absolute;
   top: 60px;
   right: 20px;
-  background-color: #333;
+  background-color: var(--notification-bg);
+  color: var(--text-color);
   border-radius: 20px;
   padding: 16px;
-  color: white;
   font-family: Arial, sans-serif;
   z-index: 1000;
   width: 272px;
@@ -326,15 +352,19 @@ header {
   margin-right: 8px;
 }
 
+.theme-menu-text {
+  color: var(--imp-white-text);
+}
+
 .user-wrapper {
   position: absolute;
   top: 60px;
   right: 90px;
-  background-color: #333;
+  background-color: var(--notification-bg);
+  color: var(--text-color);
   border-radius: 20px;
   width: 272px;
   padding: 16px;
-  color: white;
   font-family: Arial, sans-serif;
   z-index: 1000;
 }
@@ -364,7 +394,7 @@ header {
 
 .notification-bar {
   height: 4px;
-  background-color: #fff;
+  background-color: var(--text-color);
   width: 100%;
   transition: width 1s linear;
 }
